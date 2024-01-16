@@ -11,8 +11,8 @@ export class ClientController {
   constructor(private readonly clientService: ClientService) { }
   
   @Post()
-  // @Access(UserRights.OWNER, UserRights.OPERATOR)
-  // @UseGuards(UserRoleGuard)
+  @Access(UserRights.OWNER, UserRights.OPERATOR)
+  @UseGuards(UserRoleGuard)
   create(@Body() createClientDto: CreateClientDto) {
     return this.clientService.create(createClientDto);
   }
@@ -28,15 +28,15 @@ export class ClientController {
   }
 
   @Patch('/:id')
-  // @Access(UserRights.OWNER, UserRights.OPERATOR)
-  // @UseGuards(UserRoleGuard)
+  @Access(UserRights.OWNER, UserRights.OPERATOR)
+  @UseGuards(UserRoleGuard)
   update(@Param('id') id: string, @Body() body: UpdateClientDto) {
     return this.clientService.update(id, body);
   }
 
   @Delete('/:id')
-  // @Access(UserRights.OWNER, UserRights.OPERATOR)
-  // @UseGuards(UserRoleGuard)
+  @Access(UserRights.OWNER, UserRights.OPERATOR)
+  @UseGuards(UserRoleGuard)
   remove(@Param('id') id: string) {
     return this.clientService.remove(id);
   }

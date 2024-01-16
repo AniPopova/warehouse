@@ -33,7 +33,7 @@ let UserController = class UserController {
     }
     create(body) {
         const newUser = this.userService.create(body);
-        return `New user created successfully.`;
+        return `New ${newUser} created successfully.`;
     }
     update(id, body) {
         const user = this.userService.update(id, body);

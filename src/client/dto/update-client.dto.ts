@@ -6,16 +6,13 @@ export class UpdateClientDto extends PartialType(CreateClientDto) {
 
   @IsString()
   @IsOptional()
-  @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @IsString()
   @IsOptional()
-  @IsNotEmpty()
-  address: string;
+  address?: string;
 
   @IsString()
   @IsOptional()
-  @IsNotEmpty()
-  identificationCode: string;
+  identificationCode?: string;
 }

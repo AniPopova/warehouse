@@ -25,7 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateWarehouseDto.prototype, "type", void 0);
 __decorate([
-    (0, class_validator_1.IsUUID)(),
+    (0, class_validator_1.IsUUID)('4', { message: 'Invalid UUID' }),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateWarehouseDto.prototype, "clientId", void 0);

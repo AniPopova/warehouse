@@ -10,7 +10,7 @@ export class CreateWarehouseDto {
  @IsEnum(ProductType)
   type: ProductType;
 
-  @IsUUID()
+  @IsUUID('4', { message: 'Invalid UUID' })
   @IsNotEmpty()
   clientId: string;
 }

@@ -6,7 +6,7 @@ export class CreateOrderDto {
   @IsEnum(OrderType)
   type: OrderType;
 
-  @IsUUID()
+  @IsUUID('4', { message: 'Invalid UUID' })
   @IsNotEmpty()
   clientId: string;
 }

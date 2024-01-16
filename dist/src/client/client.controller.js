@@ -17,6 +17,9 @@ const common_1 = require("@nestjs/common");
 const client_service_1 = require("./client.service");
 const create_client_dto_1 = require("./dto/create-client.dto");
 const update_client_dto_1 = require("./dto/update-client.dto");
+const access_decorator_1 = require("../decorators/access.decorator");
+const user_entity_1 = require("../user/entities/user.entity");
+const user_role_guard_1 = require("../user/user-role.guard");
 let ClientController = class ClientController {
     constructor(clientService) {
         this.clientService = clientService;
@@ -40,6 +43,8 @@ let ClientController = class ClientController {
 exports.ClientController = ClientController;
 __decorate([
     (0, common_1.Post)(),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_client_dto_1.CreateClientDto]),
@@ -60,6 +65,8 @@ __decorate([
 ], ClientController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)('/:id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -68,6 +75,8 @@ __decorate([
 ], ClientController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)('/:id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
