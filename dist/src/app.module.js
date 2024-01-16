@@ -21,10 +21,7 @@ const typeorm_1 = require("@nestjs/typeorm");
 const data_source_1 = require("../db/data.source");
 const core_1 = require("@nestjs/core");
 const authorization_exception_filter_1 = require("./exception/authorization-exception.filter");
-const auth_module_1 = require("./auth/auth.module");
 const user_entity_1 = require("./user/entities/user.entity");
-const user_repository_1 = require("./user/user.repository");
-const typeorm_ex_module_1 = require("../db/typeorm-ex.module");
 let AppModule = class AppModule {
     configure(consumer) { }
 };
@@ -36,8 +33,7 @@ exports.AppModule = AppModule = __decorate([
                 ...data_source_1.dataSourceOptions,
                 autoLoadEntities: true,
             }),
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, user_repository_1.UserRepository]),
-            typeorm_ex_module_1.TypeOrmExModule.forCustomRepository([user_repository_1.UserRepository]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             user_module_1.UserModule,
             client_module_1.ClientModule,
             warehouse_module_1.WarehouseModule,
@@ -45,7 +41,6 @@ exports.AppModule = AppModule = __decorate([
             order_module_1.OrderModule,
             order_details_module_1.OrderDetailsModule,
             invoice_module_1.InvoiceModule,
-            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [

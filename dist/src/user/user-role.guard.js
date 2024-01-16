@@ -22,7 +22,7 @@ let UserRoleGuard = class UserRoleGuard {
             return false;
         }
         const request = context.switchToHttp().getRequest();
-        const userRole = request.user?.user_roles;
+        const userRole = request.user?.user.userRole;
         return allowedRoles.includes(userRole);
     }
 };

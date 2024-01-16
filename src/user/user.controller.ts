@@ -40,7 +40,7 @@ export class UserController {
   @UseGuards(UserRoleGuard)
   create(@Body() body: CreateUserDto) {
     const newUser = this.userService.create(body);
-    return `New user created successfully.`;
+    return `New ${newUser} created successfully.`;
   }
 
   @Patch('/:id')
