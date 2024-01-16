@@ -18,6 +18,9 @@ const user_entity_1 = require("./entities/user.entity");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 let UserService = class UserService {
+    findOne(name) {
+        throw new Error('Method not implemented.');
+    }
     constructor(userRepository, logger) {
         this.userRepository = userRepository;
         this.logger = logger;
@@ -68,6 +71,15 @@ let UserService = class UserService {
         user.deletedAt = new Date();
         await this.userRepository.save(user);
         return `User with id: ${id} removed successfully.`;
+    }
+    async findOneBy(email) {
+        try {
+            return await this.userRepository.findOneBy({ email });
+        }
+        catch (error) {
+            this.logger.error('Error during user retrieval', error);
+            throw error;
+        }
     }
 };
 exports.UserService = UserService;

@@ -22,6 +22,7 @@ const data_source_1 = require("../db/data.source");
 const core_1 = require("@nestjs/core");
 const authorization_exception_filter_1 = require("./exception/authorization-exception.filter");
 const user_entity_1 = require("./user/entities/user.entity");
+const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
     configure(consumer) { }
 };
@@ -41,6 +42,7 @@ exports.AppModule = AppModule = __decorate([
             order_module_1.OrderModule,
             order_details_module_1.OrderDetailsModule,
             invoice_module_1.InvoiceModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [
