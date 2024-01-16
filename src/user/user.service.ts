@@ -8,6 +8,9 @@ import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
+  findOne(name: string) {
+    throw new Error('Method not implemented.');
+  }
   constructor(@InjectRepository(User) private readonly userRepository: Repository<User>, private readonly logger: Logger) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -65,4 +68,13 @@ export class UserService {
     return `User with id: ${id} removed successfully.`
   }
 
+
+  async findOneBy(email: string): Promise<User | null> {
+    try {
+      return await this.userRepository.findOneBy({ email });
+    } catch (error) {
+      this.logger.error('Error during user retrieval', error);
+      throw error; // Re-throw the error to propagate it to the calling code
+    }
+  }
 }

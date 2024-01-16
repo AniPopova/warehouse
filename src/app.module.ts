@@ -13,6 +13,7 @@ import { dataSourceOptions } from 'db/data.source';
 import { APP_FILTER } from '@nestjs/core';
 import { AuthorizationExceptionFilter } from './exception/authorization-exception.filter';
 import { User } from './user/entities/user.entity';
+import { AuthModule } from './auth/auth.module';
 
 
 @Module({
@@ -29,6 +30,7 @@ import { User } from './user/entities/user.entity';
     OrderModule,
     OrderDetailsModule,
     InvoiceModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
