@@ -36,7 +36,7 @@ let AuthService = class AuthService {
                 };
             }
             else {
-                throw new common_1.UnauthorizedException();
+                throw new common_1.UnauthorizedException('You are not authorized to execute this action!');
             }
         }
         catch (error) {
@@ -50,7 +50,7 @@ let AuthService = class AuthService {
             if (user && user.password === password) {
                 return user;
             }
-            return null;
+            return user;
         }
         catch (error) {
             this.logger.error('Error during user validation', error);

@@ -13,53 +13,38 @@ export class AuthService {
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
     private logger: Logger
-  ) {}
-
-  // async signIn(name, pass) {
-  //   const user = await this.userService.findOne(name);
-  //   if (user?.password !== pass) {
-  //     throw new UnauthorizedException();
-  //   }
-  //   const payload = { sub: user.id, name: user.name };
-  //   return {
-  //     access_token: await this.jwtService.signAsync(payload),
-  //   };
-  // }
+  ) { }
 
   async signIn(name: string, pass: string) {
     try {
       const user = await this.userService.findOneBy(name);
-  
+
       if (user && 'password' in user) {
         const payload = { sub: user.id, name: user.name };
         return {
           access_token: await this.jwtService.signAsync(payload),
         };
       } else {
-        throw new UnauthorizedException();
+        throw new UnauthorizedException('You are not authorized to execute this action!');
       }
     } catch (error) {
       this.logger.error('Error during user sign-in', error);
-      throw error; // Re-throw the error to propagate it to the calling code
+      throw error;
     }
   }
-  
-  
-  
+
   async validateUser(email: string, password: string): Promise<User | null> {
     try {
       const user = await this.userRepository.findOneBy({ email });
-  
+
       if (user && (user as User).password === password) {
         return user as User;
       }
-  
-      return null;
+      return user;
     } catch (error) {
       this.logger.error('Error during user validation', error);
-      throw error; 
+      throw error;
+    }
   }
-  
-}
 
 }
