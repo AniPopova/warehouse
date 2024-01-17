@@ -24,7 +24,8 @@ const authorization_exception_filter_1 = require("./exception/authorization-exce
 const user_entity_1 = require("./user/entities/user.entity");
 const auth_module_1 = require("./auth/auth.module");
 let AppModule = class AppModule {
-    configure(consumer) { }
+    configure(consumer) {
+    }
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
@@ -50,6 +51,10 @@ exports.AppModule = AppModule = __decorate([
             {
                 provide: core_1.APP_FILTER,
                 useClass: authorization_exception_filter_1.AuthorizationExceptionFilter,
+            },
+            {
+                provide: core_1.APP_PIPE,
+                useClass: common_1.ValidationPipe,
             },
         ],
     })

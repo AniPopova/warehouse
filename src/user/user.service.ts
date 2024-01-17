@@ -1,6 +1,5 @@
-import { Injectable, NotFoundException, ConflictException, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User, UserRights } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -43,7 +42,7 @@ export class UserService {
         throw new UnauthorizedException('Do do not have rights to execute this action!')
       }
       this.logger.error('Error during search user', error);
-      throw error; // Re-throw the error to propagate it to the calling code
+      throw error; 
     }
   }
 
@@ -74,7 +73,7 @@ export class UserService {
       return await this.userRepository.findOneBy({ email });
     } catch (error) {
       this.logger.error('Error during user retrieval', error);
-      throw error; // Re-throw the error to propagate it to the calling code
+      throw error; 
     }
   }
 }
