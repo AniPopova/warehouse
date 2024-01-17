@@ -29,7 +29,7 @@ let ClientService = class ClientService {
     findAll() {
         return this.clientRepository.find();
     }
-    async findOneBy(id) {
+    async findOneById(id) {
         try {
             const client = await this.clientRepository.findOneBy({ id });
             if (!client) {

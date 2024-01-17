@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, Logger, UnauthorizedException } from '@n
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserRights } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { UserRepository } from './user.repository';
 
 
 @Injectable()
@@ -10,9 +10,11 @@ export class UserService {
   findOne(name: string) {
     throw new Error('Method not implemented.');
   }
-  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>, private readonly logger: Logger) { }
+  constructor(@InjectRepository(User) 
+  private readonly userRepository: UserRepository, 
+  private readonly logger: Logger) { }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto){
     const { name, password, email, userRole } = createUserDto;
     const chosenRole = userRole !== undefined ? userRole : UserRights.VIEWER;
 
@@ -68,11 +70,11 @@ export class UserService {
   }
 
 
-  async findOneBy(email: string): Promise<User | null> {
+  async findOneBy(email: string): Promise<User> {
     try {
       return await this.userRepository.findOneBy({ email });
     } catch (error) {
-      this.logger.error('Error during user retrieval', error);
+      this.logger.error('Error during searching user', error);
       throw error; 
     }
   }

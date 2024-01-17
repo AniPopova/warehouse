@@ -2,13 +2,14 @@ import { Logger } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entity';
-import { Repository } from 'typeorm';
+import { UserRepository } from 'src/user/user.repository';
 export declare class AuthService {
     private userService;
-    private userRepository;
+    private readonly userRepository;
     private jwtService;
     private logger;
-    constructor(userService: UserService, userRepository: Repository<User>, jwtService: JwtService, logger: Logger);
+    constructor(userService: UserService, userRepository: UserRepository, jwtService: JwtService, logger: Logger);
+    signup(email: string, password: string): Promise<void>;
     signIn(name: string, pass: string): Promise<{
         access_token: string;
     }>;

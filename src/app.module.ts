@@ -10,10 +10,13 @@ import { OrderDetailsModule } from './order_details/order_details.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'db/data.source';
-import { APP_FILTER, APP_PIPE} from '@nestjs/core';
+import { APP_FILTER, APP_PIPE, APP_GUARD } from '@nestjs/core';
 import { AuthorizationExceptionFilter } from './exception/authorization-exception.filter';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
+import { UserRoleGuard } from './user/user-role.guard';
+import { UserRepository } from './user/user.repository';
+import { AuthController } from './auth/auth.controller';
 
 
 @Module({
@@ -22,7 +25,7 @@ import { AuthModule } from './auth/auth.module';
       ...dataSourceOptions,
       autoLoadEntities: true,
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, UserRepository]),
     UserModule,
     ClientModule,
     WarehouseModule,
@@ -32,17 +35,21 @@ import { AuthModule } from './auth/auth.module';
     InvoiceModule,
     AuthModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, AuthController],
   providers: [
     AppService,
     {
       provide: APP_FILTER,
       useClass: AuthorizationExceptionFilter,
     },
-    {
-      provide: APP_PIPE,
-      useClass: ValidationPipe, 
-    },
+    // {
+    //   provide: APP_PIPE,
+    //   useClass: ValidationPipe, 
+    // },
+    // {
+    //   provide: APP_GUARD,
+    //   useClass: UserRoleGuard,
+    // },
   ],
 })
 

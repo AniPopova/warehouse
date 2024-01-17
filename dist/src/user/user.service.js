@@ -16,7 +16,7 @@ exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const user_entity_1 = require("./entities/user.entity");
 const typeorm_1 = require("@nestjs/typeorm");
-const typeorm_2 = require("typeorm");
+const user_repository_1 = require("./user.repository");
 let UserService = class UserService {
     findOne(name) {
         throw new Error('Method not implemented.');
@@ -25,7 +25,7 @@ let UserService = class UserService {
         this.userRepository = userRepository;
         this.logger = logger;
     }
-    async create(createUserDto) {
+    async createUser(createUserDto) {
         const { name, password, email, userRole } = createUserDto;
         const chosenRole = userRole !== undefined ? userRole : user_entity_1.UserRights.VIEWER;
         const newUser = await this.userRepository.save({
@@ -77,7 +77,7 @@ let UserService = class UserService {
             return await this.userRepository.findOneBy({ email });
         }
         catch (error) {
-            this.logger.error('Error during user retrieval', error);
+            this.logger.error('Error during searching user', error);
             throw error;
         }
     }
@@ -86,6 +86,7 @@ exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),
-    __metadata("design:paramtypes", [typeorm_2.Repository, common_1.Logger])
+    __metadata("design:paramtypes", [user_repository_1.UserRepository,
+        common_1.Logger])
 ], UserService);
 //# sourceMappingURL=user.service.js.map
