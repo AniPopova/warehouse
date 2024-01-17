@@ -32,7 +32,7 @@ let UserController = class UserController {
         return this.userService.findOneById(id);
     }
     create(body) {
-        const newUser = this.userService.create(body);
+        const newUser = this.userService.createUser(body);
         return `New ${newUser} created successfully.`;
     }
     update(id, body) {
@@ -60,8 +60,6 @@ __decorate([
 ], UserController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Post)(),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER),
-    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),

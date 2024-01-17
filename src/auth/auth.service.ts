@@ -1,19 +1,29 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { UserRepository } from 'src/user/user.repository';
 
 @Injectable()
 export class AuthService {
 
   constructor(
     private userService: UserService,
-    @InjectRepository(User) private userRepository: Repository<User>,
+    //@InjectRepository(User) private userRepository: Repository<User>,
+    private readonly userRepository: UserRepository,
     private jwtService: JwtService,
     private logger: Logger
   ) { }
+
+
+  async signup(email: string, password: string) {
+    const users = await this.userService.findAll();
+    if (users.length) {
+       throw new BadRequestException('email in use')
+    }
+  }
 
   async signIn(name: string, pass: string) {
     try {

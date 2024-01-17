@@ -8,7 +8,7 @@ export declare class ClientService {
     constructor(clientRepository: Repository<Client>, logger: Logger);
     create(createClientDto: CreateClientDto): Promise<Client>;
     findAll(): Promise<Client[]>;
-    findOneBy(id: string): Promise<Client>;
+    findOneById(id: string): Promise<Client>;
     update(id: string, attrs: Partial<Client>): Promise<Client>;
     remove(id: string): Promise<string>;
 }

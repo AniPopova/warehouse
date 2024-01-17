@@ -23,6 +23,8 @@ const core_1 = require("@nestjs/core");
 const authorization_exception_filter_1 = require("./exception/authorization-exception.filter");
 const user_entity_1 = require("./user/entities/user.entity");
 const auth_module_1 = require("./auth/auth.module");
+const user_repository_1 = require("./user/user.repository");
+const auth_controller_1 = require("./auth/auth.controller");
 let AppModule = class AppModule {
     configure(consumer) {
     }
@@ -35,7 +37,7 @@ exports.AppModule = AppModule = __decorate([
                 ...data_source_1.dataSourceOptions,
                 autoLoadEntities: true,
             }),
-            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
+            typeorm_1.TypeOrmModule.forFeature([user_entity_1.User, user_repository_1.UserRepository]),
             user_module_1.UserModule,
             client_module_1.ClientModule,
             warehouse_module_1.WarehouseModule,
@@ -45,16 +47,12 @@ exports.AppModule = AppModule = __decorate([
             invoice_module_1.InvoiceModule,
             auth_module_1.AuthModule,
         ],
-        controllers: [app_controller_1.AppController],
+        controllers: [app_controller_1.AppController, auth_controller_1.AuthController],
         providers: [
             app_service_1.AppService,
             {
                 provide: core_1.APP_FILTER,
                 useClass: authorization_exception_filter_1.AuthorizationExceptionFilter,
-            },
-            {
-                provide: core_1.APP_PIPE,
-                useClass: common_1.ValidationPipe,
             },
         ],
     })

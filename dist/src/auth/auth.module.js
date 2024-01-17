@@ -14,12 +14,16 @@ const user_service_1 = require("../user/user.service");
 const jwt_1 = require("@nestjs/jwt");
 const user_module_1 = require("../user/user.module");
 const constants_1 = require("./constants");
+const app_controller_1 = require("../app.controller");
+const typeorm_1 = require("@nestjs/typeorm");
+const app_service_1 = require("../app.service");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            typeorm_1.TypeOrmModule.forFeature([jwt_1.JwtModule]),
             user_module_1.UserModule,
             jwt_1.JwtModule.register({
                 global: true,
@@ -27,9 +31,9 @@ exports.AuthModule = AuthModule = __decorate([
                 signOptions: { expiresIn: '60m' },
             }),
         ],
-        controllers: [user_controller_1.UserController],
-        providers: [auth_service_1.AuthService, user_service_1.UserService, common_1.Logger],
-        exports: [auth_service_1.AuthService],
+        controllers: [user_controller_1.UserController, app_controller_1.AppController],
+        providers: [auth_service_1.AuthService, user_service_1.UserService, common_1.Logger, app_service_1.AppService],
+        exports: [auth_service_1.AuthService, typeorm_1.TypeOrmModule],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

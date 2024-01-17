@@ -15,11 +15,11 @@ export class ClientService {
     return this.clientRepository.save(newClient);
   }
 
-  findAll() {
+  findAll(): Promise<Client[]> {
     return this.clientRepository.find();
   }
 
-  async findOneBy(id: string) {
+  async findOneById(id: string): Promise<Client> {
     try {
       const client = await this.clientRepository.findOneBy({ id });
       if (!client) {

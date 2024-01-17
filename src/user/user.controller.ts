@@ -12,17 +12,16 @@ import { UserRoleGuard } from './user-role.guard';
 import { UserRights } from './entities/user.entity';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Access, Serialize } from 'src/decorators/access.decorator';
+import { Serialize } from 'src/decorators/access.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
 
 
 @Controller('user')
-//@Serialize(UserDto)
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
-  @Serialize(UserDto)// this could be used globally by appling to the controller
+  @Serialize(UserDto)
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -36,10 +35,10 @@ export class UserController {
 
 
   @Post()
-  @Access(UserRights.OPERATOR, UserRights.OWNER)
-  @UseGuards(UserRoleGuard)
+  // @Access(UserRights.OPERATOR, UserRights.OWNER)
+  // @UseGuards(UserRoleGuard)
   create(@Body() body: CreateUserDto) {
-    const newUser = this.userService.create(body);
+    const newUser = this.userService.createUser(body);
     return `New ${newUser} created successfully.`;
   }
 
