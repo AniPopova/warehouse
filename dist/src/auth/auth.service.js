@@ -27,11 +27,11 @@ let AuthService = class AuthService {
             throw new common_1.BadRequestException('email in use');
         }
     }
-    async signIn(name, pass) {
+    async signIn(email, pass) {
         try {
-            const user = await this.userService.findOneBy(name);
+            const user = await this.userService.findOneByEmail(email);
             if (user && 'password' in user) {
-                const payload = { sub: user.id, name: user.name };
+                const payload = { sub: user.id, username: user.username, role: user.userRole };
                 return {
                     access_token: await this.jwtService.signAsync(payload),
                 };
@@ -54,8 +54,7 @@ let AuthService = class AuthService {
             return user;
         }
         catch (error) {
-            this.logger.error('Error during user validation', error);
-            throw error;
+            throw this.logger.error('Error during user validation', error);
         }
     }
 };

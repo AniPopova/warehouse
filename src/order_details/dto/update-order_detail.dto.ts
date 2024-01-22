@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateOrderDetailDto } from './create-order_detail.dto';
-import { IsUUID, IsNotEmpty, IsNumber, IsPositive, IsOptional } from 'class-validator';
+import { IsUUID, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 
 export class UpdateOrderDetailDto extends PartialType(CreateOrderDetailDto) {
   @IsUUID('4', { message: 'Invalid UUID' })
@@ -20,7 +20,6 @@ export class UpdateOrderDetailDto extends PartialType(CreateOrderDetailDto) {
 
   @IsNumber()
   @IsNotEmpty()
-  @IsPositive()
   @IsOptional()
   quantity?: number;
 

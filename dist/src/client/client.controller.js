@@ -17,62 +17,80 @@ const common_1 = require("@nestjs/common");
 const client_service_1 = require("./client.service");
 const create_client_dto_1 = require("./dto/create-client.dto");
 const update_client_dto_1 = require("./dto/update-client.dto");
+const access_decorator_1 = require("../decorators/access.decorator");
+const user_entity_1 = require("../user/entities/user.entity");
 let ClientController = class ClientController {
     constructor(clientService) {
         this.clientService = clientService;
     }
-    create(createClientDto) {
-        return this.clientService.create(createClientDto);
+    async create(createClientDto) {
+        return await this.clientService.create(createClientDto);
     }
     findAll() {
         return this.clientService.findAll();
     }
-    findOne(id) {
-        return this.clientService.findOneById(id);
+    async findOne(id) {
+        return await this.clientService.findOneById(id);
     }
-    update(id, body) {
-        return this.clientService.update(id, body);
+    async update(id, body) {
+        return await this.clientService.update(id, body);
     }
-    remove(id) {
-        return this.clientService.remove(id);
+    async remove(id) {
+        return await this.clientService.softDelete(id);
+    }
+    async permRemove(id) {
+        return await this.clientService.permanentDelete(id);
     }
 };
 exports.ClientController = ClientController;
 __decorate([
     (0, common_1.Post)(),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_client_dto_1.CreateClientDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ClientController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], ClientController.prototype, "findAll", null);
 __decorate([
-    (0, common_1.Get)('/:id'),
+    (0, common_1.Get)(':id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ClientController.prototype, "findOne", null);
 __decorate([
-    (0, common_1.Patch)('/:id'),
+    (0, common_1.Patch)(':id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_client_dto_1.UpdateClientDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ClientController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)('/:id'),
+    (0, common_1.Delete)(':id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], ClientController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Delete)('perm/:id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ClientController.prototype, "permRemove", null);
 exports.ClientController = ClientController = __decorate([
     (0, common_1.Controller)('client'),
     __metadata("design:paramtypes", [client_service_1.ClientService])

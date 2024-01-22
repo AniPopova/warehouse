@@ -2,7 +2,7 @@ import { UserRights } from "src/user/entities/user.entity";
 
 export class AuthCredentialsDto {
 
-  name: string;
+  username: string;
   
   password: string;
 

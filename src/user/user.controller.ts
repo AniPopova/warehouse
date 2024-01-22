@@ -6,54 +6,67 @@ import {
   Patch, 
   Param, 
   UseGuards, 
-  SetMetadata, 
   Body} from '@nestjs/common';
 import { UserRoleGuard } from './user-role.guard';
 import { UserRights } from './entities/user.entity';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { Serialize } from 'src/decorators/access.decorator';
+import { Access, Serialize } from 'src/decorators/access.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserDto } from './dto/user.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 
 @Controller('user')
+@UseGuards(AuthGuard, UserRoleGuard)
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
   @Serialize(UserDto)
   @Get()
+  @Access(UserRights.OWNER, UserRights.OPERATOR, UserRights.VIEWER)
   findAll() {
     return this.userService.findAll();
   }
 
   @Serialize(UserDto)
-  @Get('/:id')
-  findOne(id: string) {    
-    return this.userService.findOneById(id);
+  @Get('param')
+  @Access(UserRights.OWNER, UserRights.OPERATOR, UserRights.VIEWER)
+  async getUser( @Param('param') param: string) {
+    if (param === 'email') {
+      return await this.userService.findOneByEmail(param);
+    } else if (param === 'username') {
+      return await this.userService.findOneByUserName(param);
+    } else if (param === 'id') {
+      return await this.userService.findOneById(param);
+    } else {
+      return 'Invalid search parameter';
+    }
   }
 
-
+  @Serialize(UserDto)
   @Post()
-  // @Access(UserRights.OPERATOR, UserRights.OWNER)
-  // @UseGuards(UserRoleGuard)
-  create(@Body() body: CreateUserDto) {
-    const newUser = this.userService.createUser(body);
-    return `New ${newUser} created successfully.`;
+  @Access(UserRights.OPERATOR, UserRights.OWNER)
+  async create(@Body() body: CreateUserDto) {
+    return await this.userService.create(body);
   }
 
-  @Patch('/:id')
-  @SetMetadata('roles', [UserRights.OPERATOR, UserRights.OWNER])
-  @UseGuards(UserRoleGuard)
-  update(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    const user = this.userService.update(id, body);
-    return `User ${user} updated successfully.`;
+  @Patch(':id')
+  @Access(UserRights.OPERATOR, UserRights.OWNER)
+  async update(@Param('id') id: string, @Body() body: UpdateUserDto) {
+    return await this.userService.update(id, body);
   }
 
-  @Delete('/:id')
-  @SetMetadata('roles', [UserRights.OWNER])
-  @UseGuards(UserRoleGuard)
-  remove(@Param('id') id: string) {
-    return `User with id:${id} deleted successfully.`;
+  @Delete(':id')
+  @Access(UserRights.OWNER, UserRights.OPERATOR)
+  async remove(@Param('id') id: string) {
+    return await this.userService.remove(id);
   }
+
+  @Delete('perm/:id')
+  @Access(UserRights.OWNER)
+  async permRemove(@Param('id') id: string) {
+    return await this.userService.permanentDelete(id);
+  }
+
 }

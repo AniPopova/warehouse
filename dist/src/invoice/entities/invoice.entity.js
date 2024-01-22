@@ -44,7 +44,7 @@ __decorate([
 ], Invoice.prototype, "deletedAt", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => order_entity_1.Order),
-    (0, typeorm_1.JoinColumn)({ name: 'id' }),
+    (0, typeorm_1.JoinColumn)({ name: 'order_id' }),
     __metadata("design:type", order_entity_1.Order)
 ], Invoice.prototype, "order", void 0);
 exports.Invoice = Invoice = __decorate([

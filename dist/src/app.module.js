@@ -19,8 +19,6 @@ const order_details_module_1 = require("./order_details/order_details.module");
 const invoice_module_1 = require("./invoice/invoice.module");
 const typeorm_1 = require("@nestjs/typeorm");
 const data_source_1 = require("../db/data.source");
-const core_1 = require("@nestjs/core");
-const authorization_exception_filter_1 = require("./exception/authorization-exception.filter");
 const user_entity_1 = require("./user/entities/user.entity");
 const auth_module_1 = require("./auth/auth.module");
 const user_repository_1 = require("./user/user.repository");
@@ -50,10 +48,6 @@ exports.AppModule = AppModule = __decorate([
         controllers: [app_controller_1.AppController, auth_controller_1.AuthController],
         providers: [
             app_service_1.AppService,
-            {
-                provide: core_1.APP_FILTER,
-                useClass: authorization_exception_filter_1.AuthorizationExceptionFilter,
-            },
         ],
     })
 ], AppModule);

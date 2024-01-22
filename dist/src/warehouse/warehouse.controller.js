@@ -19,71 +19,83 @@ const create_warehouse_dto_1 = require("./dto/create-warehouse.dto");
 const update_warehouse_dto_1 = require("./dto/update-warehouse.dto");
 const access_decorator_1 = require("../decorators/access.decorator");
 const user_entity_1 = require("../user/entities/user.entity");
+const auth_guard_1 = require("../auth/auth.guard");
 const user_role_guard_1 = require("../user/user-role.guard");
 let WarehouseController = class WarehouseController {
     constructor(warehouseService) {
         this.warehouseService = warehouseService;
     }
-    create(createWarehouseDto) {
-        return this.warehouseService.create(createWarehouseDto);
+    async create(createWarehouseDto) {
+        return await this.warehouseService.create(createWarehouseDto);
     }
-    findAll() {
-        return this.warehouseService.findAll();
+    async findAll() {
+        return await this.warehouseService.findAll();
     }
-    findOne(id) {
-        return this.warehouseService.findOneBy(id);
+    async findOne(id) {
+        return await this.warehouseService.findOneById(id);
     }
-    update(id, updateWarehouseDto) {
-        return this.warehouseService.update(id, updateWarehouseDto);
+    async update(id, updateWarehouseDto) {
+        return await this.warehouseService.update(id, updateWarehouseDto);
     }
-    remove(id) {
-        return this.warehouseService.remove(id);
+    async remove(id) {
+        return await this.warehouseService.softDelete(id);
+    }
+    async permDelete(id) {
+        return await this.warehouseService.permanentDelete(id);
     }
 };
 exports.WarehouseController = WarehouseController;
 __decorate([
     (0, common_1.Post)(),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
-    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_warehouse_dto_1.CreateWarehouseDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], WarehouseController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], WarehouseController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], WarehouseController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
-    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_warehouse_dto_1.UpdateWarehouseDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], WarehouseController.prototype, "update", null);
 __decorate([
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
-    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
     (0, common_1.Delete)(':id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], WarehouseController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Delete)('perm/:id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], WarehouseController.prototype, "permDelete", null);
 exports.WarehouseController = WarehouseController = __decorate([
-    (0, common_1.Controller)('warehouse'),
+    (0, common_1.Controller)('warehouses'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, user_role_guard_1.UserRoleGuard),
     __metadata("design:paramtypes", [warehouse_service_1.WarehouseService])
 ], WarehouseController);
 //# sourceMappingURL=warehouse.controller.js.map

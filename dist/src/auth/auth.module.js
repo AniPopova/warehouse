@@ -14,9 +14,8 @@ const user_service_1 = require("../user/user.service");
 const jwt_1 = require("@nestjs/jwt");
 const user_module_1 = require("../user/user.module");
 const constants_1 = require("./constants");
-const app_controller_1 = require("../app.controller");
 const typeorm_1 = require("@nestjs/typeorm");
-const app_service_1 = require("../app.service");
+const auth_controller_1 = require("./auth.controller");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -28,11 +27,15 @@ exports.AuthModule = AuthModule = __decorate([
             jwt_1.JwtModule.register({
                 global: true,
                 secret: constants_1.jwtConstants.secret,
-                signOptions: { expiresIn: '60m' },
+                signOptions: { expiresIn: '8h' },
             }),
         ],
-        controllers: [user_controller_1.UserController, app_controller_1.AppController],
-        providers: [auth_service_1.AuthService, user_service_1.UserService, common_1.Logger, app_service_1.AppService],
+        controllers: [user_controller_1.UserController, auth_controller_1.AuthController],
+        providers: [
+            auth_service_1.AuthService,
+            user_service_1.UserService,
+            common_1.Logger,
+        ],
         exports: [auth_service_1.AuthService, typeorm_1.TypeOrmModule],
     })
 ], AuthModule);

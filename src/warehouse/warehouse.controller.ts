@@ -4,40 +4,48 @@ import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
 import { Access } from 'src/decorators/access.decorator';
 import { UserRights } from 'src/user/entities/user.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
 import { UserRoleGuard } from 'src/user/user-role.guard';
 
-@Controller('warehouse')
+@Controller('warehouses')
+@UseGuards(AuthGuard, UserRoleGuard)
 export class WarehouseController {
   constructor(private readonly warehouseService: WarehouseService) { }
 
   @Post()
-  @Access(UserRights.OWNER, UserRights.OPERATOR)
-  @UseGuards(UserRoleGuard)
-  create(@Body() createWarehouseDto: CreateWarehouseDto) {
-    return this.warehouseService.create(createWarehouseDto);
+  @Access(UserRights.OPERATOR, UserRights.OWNER)
+  async create(@Body() createWarehouseDto: CreateWarehouseDto) {
+    return await this.warehouseService.create(createWarehouseDto);
   }
 
   @Get()
-  findAll() {
-    return this.warehouseService.findAll();
+  @Access(UserRights.OWNER, UserRights.OPERATOR, UserRights.VIEWER)
+  async findAll() {
+    return await this.warehouseService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.warehouseService.findOneBy(id);
+  @Access(UserRights.OWNER, UserRights.OPERATOR, UserRights.VIEWER)
+  async findOne(@Param('id') id: string) {
+    return await this.warehouseService.findOneById(id);
   }
 
   @Patch(':id')
   @Access(UserRights.OWNER, UserRights.OPERATOR)
-  @UseGuards(UserRoleGuard)
-  update(@Param('id') id: string, @Body() updateWarehouseDto: UpdateWarehouseDto) {
-    return this.warehouseService.update(id, updateWarehouseDto);
+  async update(@Param('id') id: string, @Body() updateWarehouseDto: UpdateWarehouseDto) {
+    return await this.warehouseService.update(id, updateWarehouseDto);
   }
 
-  @Access(UserRights.OWNER)
-  @UseGuards(UserRoleGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.warehouseService.remove(id);
+  @Access(UserRights.OWNER, UserRights.OPERATOR)
+  async remove(@Param('id') id: string) {
+    return await this.warehouseService.softDelete(id);
+  }
+
+  @Delete('perm/:id')
+  @Access(UserRights.OWNER)
+  async permDelete(@Param('id') id:string){
+    return await this.warehouseService.permanentDelete(id)
   }
 }
+

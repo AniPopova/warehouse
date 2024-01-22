@@ -3,5 +3,4 @@ export declare class CreateProductDto {
     name: string;
     type: ProductType;
     unit: UnitType;
-    clientId: string;
 }

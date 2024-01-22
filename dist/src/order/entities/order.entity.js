@@ -51,7 +51,7 @@ __decorate([
 ], Order.prototype, "deletedAt", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => client_entity_1.Client),
-    (0, typeorm_1.JoinColumn)({ name: 'id' }),
+    (0, typeorm_1.JoinColumn)({ name: 'client_id' }),
     __metadata("design:type", client_entity_1.Client)
 ], Order.prototype, "client", void 0);
 exports.Order = Order = __decorate([
@@ -64,10 +64,11 @@ let OrderSubscriber = class OrderSubscriber {
     }
     async afterInsert(event) {
         const order = event.entity;
+        const orderDetail = event.entity;
         if (order.type === OrderType.ORDER) {
             const invoice = new invoice_entity_1.Invoice();
             invoice.orderId = order.id;
-            await invoice_entity_1.Invoice.save(invoice);
+            invoice_entity_1.Invoice.save(invoice);
         }
     }
 };

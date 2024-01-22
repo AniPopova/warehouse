@@ -21,6 +21,7 @@ const create_user_dto_1 = require("./dto/create-user.dto");
 const access_decorator_1 = require("../decorators/access.decorator");
 const update_user_dto_1 = require("./dto/update-user.dto");
 const user_dto_1 = require("./dto/user.dto");
+const auth_guard_1 = require("../auth/auth.guard");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
@@ -28,64 +29,88 @@ let UserController = class UserController {
     findAll() {
         return this.userService.findAll();
     }
-    findOne(id) {
-        return this.userService.findOneById(id);
+    async getUser(param) {
+        if (param === 'email') {
+            return await this.userService.findOneByEmail(param);
+        }
+        else if (param === 'username') {
+            return await this.userService.findOneByUserName(param);
+        }
+        else if (param === 'id') {
+            return await this.userService.findOneById(param);
+        }
+        else {
+            return 'Invalid search parameter';
+        }
     }
-    create(body) {
-        const newUser = this.userService.createUser(body);
-        return `New ${newUser} created successfully.`;
+    async create(body) {
+        return await this.userService.create(body);
     }
-    update(id, body) {
-        const user = this.userService.update(id, body);
-        return `User ${user} updated successfully.`;
+    async update(id, body) {
+        return await this.userService.update(id, body);
     }
-    remove(id) {
-        return `User with id:${id} deleted successfully.`;
+    async remove(id) {
+        return await this.userService.remove(id);
+    }
+    async permRemove(id) {
+        return await this.userService.permanentDelete(id);
     }
 };
 exports.UserController = UserController;
 __decorate([
     (0, access_decorator_1.Serialize)(user_dto_1.UserDto),
     (0, common_1.Get)(),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "findAll", null);
 __decorate([
     (0, access_decorator_1.Serialize)(user_dto_1.UserDto),
-    (0, common_1.Get)('/:id'),
+    (0, common_1.Get)('param'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
+    __param(0, (0, common_1.Param)('param')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], UserController.prototype, "findOne", null);
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUser", null);
 __decorate([
+    (0, access_decorator_1.Serialize)(user_dto_1.UserDto),
     (0, common_1.Post)(),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "create", null);
 __decorate([
-    (0, common_1.Patch)('/:id'),
-    (0, common_1.SetMetadata)('roles', [user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER]),
-    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
+    (0, common_1.Patch)(':id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_user_dto_1.UpdateUserDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "update", null);
 __decorate([
-    (0, common_1.Delete)('/:id'),
-    (0, common_1.SetMetadata)('roles', [user_entity_1.UserRights.OWNER]),
-    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
+    (0, common_1.Delete)(':id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UserController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Delete)('perm/:id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "permRemove", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, user_role_guard_1.UserRoleGuard),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

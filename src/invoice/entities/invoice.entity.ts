@@ -25,6 +25,6 @@ export class Invoice {
   deletedAt: Date;
 
   @ManyToOne(() => Order)
-  @JoinColumn({ name: 'id' })
+  @JoinColumn({ name: 'order_id' })
   order: Order;
 }

@@ -27,7 +27,7 @@ __decorate([
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', nullable: false }),
     __metadata("design:type", String)
-], User.prototype, "name", void 0);
+], User.prototype, "username", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: 'varchar', nullable: false }),
     __metadata("design:type", String)
@@ -59,6 +59,7 @@ __decorate([
     __metadata("design:type", Date)
 ], User.prototype, "deletedAt", void 0);
 exports.User = User = __decorate([
-    (0, typeorm_1.Entity)('user')
+    (0, typeorm_1.Entity)('user'),
+    (0, typeorm_1.Unique)(['email'])
 ], User);
 //# sourceMappingURL=user.entity.js.map

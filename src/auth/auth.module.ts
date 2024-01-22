@@ -7,7 +7,9 @@ import { UserModule } from 'src/user/user.module';
 import { jwtConstants } from './constants';
 import { AppController } from 'src/app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppService } from 'src/app.service';
+import { AuthGuard } from './auth.guard';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -16,11 +18,15 @@ import { AppService } from 'src/app.service';
     JwtModule.register({
       global: true,
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '60m' },
+      signOptions: { expiresIn: '8h' },
     }),
   ],
-  controllers: [UserController, AppController],
-  providers: [AuthService, UserService, Logger, AppService],  
+  controllers: [UserController, AuthController],
+  providers: [
+    AuthService, 
+    UserService, 
+    Logger,
+  ],  
   exports: [AuthService, TypeOrmModule],  
 })
 

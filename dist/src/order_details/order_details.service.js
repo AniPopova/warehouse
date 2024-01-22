@@ -18,29 +18,85 @@ const order_detail_entity_1 = require("./entities/order_detail.entity");
 const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 let OrderDetailsService = class OrderDetailsService {
-    constructor(clientRepository) {
-        this.clientRepository = clientRepository;
+    constructor(orderDetailRepository, logger) {
+        this.orderDetailRepository = orderDetailRepository;
+        this.logger = logger;
     }
-    create(createOrderDetailDto) {
-        return 'This action adds a new orderDetail';
+    async create(createOrderDetailDto) {
+        try {
+            const orderDetails = this.orderDetailRepository.create(createOrderDetailDto);
+            return this.orderDetailRepository.save(orderDetails);
+        }
+        catch (error) {
+            this.logger.error('Impossible creation', error);
+        }
     }
-    findAll() {
-        return `This action returns all orderDetails`;
+    async findAll() {
+        const orderDetails = this.orderDetailRepository.find();
+        if ((await orderDetails).length === 0) {
+            throw new common_1.NotFoundException('DB is empty!');
+        }
+        return orderDetails;
     }
-    findOne(id) {
-        return `This action returns a #${id} orderDetail`;
+    async findOneById(id) {
+        try {
+            const orderDetail = await this.orderDetailRepository.findOneBy({ id });
+            if (!orderDetail) {
+                throw new common_1.NotFoundException();
+            }
+            return orderDetail;
+        }
+        catch (error) {
+            this.logger.error(`Error search details by id: ${id}`, error);
+            throw new common_1.BadRequestException('Error finding details by id.');
+        }
     }
-    update(id, updateOrderDetailDto) {
-        return `This action updates a #${id} orderDetail`;
+    async update(id, attrs) {
+        try {
+            const orderDetail = await this.orderDetailRepository.findOneBy({ id });
+            if (!orderDetail) {
+                throw new common_1.NotFoundException(`Details with id:${id} not found`);
+            }
+            Object.assign(orderDetail, attrs);
+            await this.orderDetailRepository.save(orderDetail);
+            return orderDetail;
+        }
+        catch (error) {
+            this.logger.error('Update not executed', error);
+        }
     }
-    remove(id) {
-        return `This action removes a #${id} orderDetail`;
+    async remove(id) {
+        try {
+            const od = await this.orderDetailRepository.findOneBy({ id });
+            if (!od) {
+                throw new common_1.NotFoundException(`Data not found`);
+            }
+            od.deletedAt = new Date();
+            await this.orderDetailRepository.save(od);
+            return `Details removed successfully`;
+        }
+        catch (error) {
+            this.logger.error('Error during deleting data.', error);
+        }
+    }
+    async permanentDelete(id) {
+        try {
+            const orderDetail = await this.orderDetailRepository.findOneBy({ id });
+            if (!orderDetail) {
+                throw new common_1.NotFoundException(`Data not found.`);
+            }
+            return await this.orderDetailRepository.remove(orderDetail);
+        }
+        catch (error) {
+            this.logger.error('Error during permanent delete.', error);
+        }
     }
 };
 exports.OrderDetailsService = OrderDetailsService;
 exports.OrderDetailsService = OrderDetailsService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(order_detail_entity_1.OrderDetail)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        common_1.Logger])
 ], OrderDetailsService);
 //# sourceMappingURL=order_details.service.js.map

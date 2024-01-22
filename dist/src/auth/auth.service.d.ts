@@ -10,7 +10,7 @@ export declare class AuthService {
     private logger;
     constructor(userService: UserService, userRepository: UserRepository, jwtService: JwtService, logger: Logger);
     signup(email: string, password: string): Promise<void>;
-    signIn(name: string, pass: string): Promise<{
+    signIn(email: string, pass: string): Promise<{
         access_token: string;
     }>;
     validateUser(email: string, password: string): Promise<User | null>;

@@ -23,46 +23,71 @@ let ClientService = class ClientService {
         this.logger = logger;
     }
     async create(createClientDto) {
-        const newClient = this.clientRepository.create(createClientDto);
-        return this.clientRepository.save(newClient);
+        try {
+            const newClient = this.clientRepository.create(createClientDto);
+            return await this.clientRepository.save(newClient);
+        }
+        catch (error) {
+            this.logger.error('Impossible create', error);
+        }
     }
-    findAll() {
-        return this.clientRepository.find();
+    async findAll() {
+        const clients = await this.clientRepository.find();
+        if (clients.length === 0) {
+            throw new common_1.NotFoundException('DB is empty!');
+        }
+        return clients;
     }
     async findOneById(id) {
         try {
             const client = await this.clientRepository.findOneBy({ id });
             if (!client) {
-                throw new common_1.NotFoundException(`Client with id: ${id}, not found.`);
+                throw new common_1.NotFoundException(`Client with such id, not found.`);
             }
             return client;
         }
         catch (error) {
-            this.logger.log(`Error during search of client with id: ${id}`);
-            throw error;
+            this.logger.error(`Error during search of client.`, error);
         }
     }
     async update(id, attrs) {
-        const client = await this.clientRepository.findOneBy({ id });
-        if (!client) {
-            throw new common_1.NotFoundException(`Client with such id:${id} not found`);
-        }
-        Object.assign(client, attrs);
-        await this.clientRepository.save(client);
-        return client;
-    }
-    async remove(id) {
         try {
             const client = await this.clientRepository.findOneBy({ id });
             if (!client) {
-                throw new common_1.NotFoundException('Client not found, try again.');
+                throw new common_1.NotFoundException(`Client with such id not found`);
+            }
+            Object.assign(client, attrs);
+            await this.clientRepository.save(client);
+            return client;
+        }
+        catch (error) {
+            this.logger.error('Update not executed', error);
+        }
+    }
+    async softDelete(id) {
+        try {
+            const client = await this.clientRepository.findOneBy({ id });
+            if (!client) {
+                throw new common_1.NotFoundException('Client not found.');
             }
             client.deletedAt = new Date();
             await this.clientRepository.save(client);
-            return `Client id:${id} removed successfully`;
+            return `Client removed successfully`;
         }
         catch (error) {
-            this.logger.log('Error during deleting client. Insufficient rights to perform delete.');
+            this.logger.error('Error during deleting client.', error);
+        }
+    }
+    async permanentDelete(id) {
+        try {
+            const client = await this.clientRepository.findOneBy({ id });
+            if (!client) {
+                throw new common_1.NotFoundException(`Client not found.`);
+            }
+            return await this.clientRepository.remove(client);
+        }
+        catch (error) {
+            this.logger.error('Error during permanent delete.', error);
         }
     }
 };
@@ -70,6 +95,7 @@ exports.ClientService = ClientService;
 exports.ClientService = ClientService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(client_entity_1.Client)),
-    __metadata("design:paramtypes", [typeorm_2.Repository, common_1.Logger])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        common_1.Logger])
 ], ClientService);
 //# sourceMappingURL=client.service.js.map

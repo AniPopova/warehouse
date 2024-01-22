@@ -5,6 +5,5 @@ export declare class UpdateProductDto extends UpdateProductDto_base {
     name?: string;
     type?: ProductType;
     unit?: UnitType;
-    clientId?: string;
 }
 export {};

@@ -18,46 +18,68 @@ const user_entity_1 = require("./entities/user.entity");
 const typeorm_1 = require("@nestjs/typeorm");
 const user_repository_1 = require("./user.repository");
 let UserService = class UserService {
-    findOne(name) {
-        throw new Error('Method not implemented.');
-    }
     constructor(userRepository, logger) {
         this.userRepository = userRepository;
         this.logger = logger;
     }
-    async createUser(createUserDto) {
-        const { name, password, email, userRole } = createUserDto;
+    async create(createUserDto) {
+        const { username, password, email, userRole } = createUserDto;
         const chosenRole = userRole !== undefined ? userRole : user_entity_1.UserRights.VIEWER;
         const newUser = await this.userRepository.save({
-            name,
+            username,
             password,
             email,
             userRole: chosenRole,
         });
         return newUser;
     }
-    findAll() {
-        return this.userRepository.find();
+    async findAll() {
+        const users = this.userRepository.find();
+        if ((await users).length === 0) {
+            throw new common_1.NotFoundException('DB is empty!');
+        }
+        return users;
     }
     async findOneById(id) {
         try {
-            return await this.userRepository.findOneBy({ id });
+            const user = await this.userRepository.findOneBy({ id });
+            if (!user) {
+                throw new common_1.NotFoundException(`User not found`);
+            }
+            return user;
         }
         catch (error) {
-            if (error.name === 'EntityNotFound') {
-                throw new common_1.NotFoundException(`User with id ${id} not found`);
-            }
-            else if (error.name === 'UnauthorizedException') {
-                throw new common_1.UnauthorizedException('Do do not have rights to execute this action!');
-            }
             this.logger.error('Error during search user', error);
-            throw error;
+        }
+    }
+    async findOneByEmail(email) {
+        try {
+            const user = await this.userRepository.findOneBy({ email });
+            if (!user) {
+                throw new common_1.NotFoundException(`User not found`);
+            }
+            return user;
+        }
+        catch (error) {
+            this.logger.error('Error during search user', error);
+        }
+    }
+    async findOneByUserName(username) {
+        try {
+            const user = await this.userRepository.findOneBy({ username });
+            if (!user) {
+                throw new common_1.NotFoundException(`User not found`);
+            }
+            return user;
+        }
+        catch (error) {
+            this.logger.error('Error during search user', error);
         }
     }
     async update(id, attrs) {
         const user = await this.userRepository.findOneBy({ id });
         if (!user) {
-            throw new common_1.NotFoundException(`User with id: ${id} not found!`);
+            throw new common_1.NotFoundException(`User not found!`);
         }
         Object.assign(user, attrs);
         await this.userRepository.save(user);
@@ -66,19 +88,22 @@ let UserService = class UserService {
     async remove(id) {
         const user = await this.userRepository.findOneBy({ id });
         if (!user) {
-            throw new common_1.NotFoundException(`User with id: ${id} not found!`);
+            throw new common_1.NotFoundException(`User not found!`);
         }
         user.deletedAt = new Date();
         await this.userRepository.save(user);
-        return `User with id: ${id} removed successfully.`;
+        return `User removed successfully.`;
     }
-    async findOneBy(email) {
+    async permanentDelete(id) {
         try {
-            return await this.userRepository.findOneBy({ email });
+            const user = await this.userRepository.findOneBy({ id });
+            if (!user) {
+                throw new common_1.NotFoundException(`User not found.`);
+            }
+            return await this.userRepository.remove(user);
         }
         catch (error) {
-            this.logger.error('Error during searching user', error);
-            throw error;
+            this.logger.error('Error during permanent delete.', error);
         }
     }
 };

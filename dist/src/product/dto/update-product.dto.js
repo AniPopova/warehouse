@@ -32,9 +32,4 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
 ], UpdateProductDto.prototype, "unit", void 0);
-__decorate([
-    (0, class_validator_1.IsUUID)('4', { message: 'Invalid UUID' }),
-    (0, class_validator_1.IsOptional)(),
-    __metadata("design:type", String)
-], UpdateProductDto.prototype, "clientId", void 0);
 //# sourceMappingURL=update-product.dto.js.map

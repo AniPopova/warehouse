@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { OrderModule } from './order/order.module';
-import { ProductModule } from './product/product.module';
+import { ProductModule } from './product/product.module'; 
 import { WarehouseModule } from './warehouse/warehouse.module';
 import { ClientModule } from './client/client.module';
 import { OrderDetailsModule } from './order_details/order_details.module';
@@ -14,7 +14,6 @@ import { APP_FILTER, APP_PIPE, APP_GUARD } from '@nestjs/core';
 import { AuthorizationExceptionFilter } from './exception/authorization-exception.filter';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
-import { UserRoleGuard } from './user/user-role.guard';
 import { UserRepository } from './user/user.repository';
 import { AuthController } from './auth/auth.controller';
 
@@ -38,10 +37,10 @@ import { AuthController } from './auth/auth.controller';
   controllers: [AppController, AuthController],
   providers: [
     AppService,
-    {
-      provide: APP_FILTER,
-      useClass: AuthorizationExceptionFilter,
-    },
+    // {
+    //   provide: APP_FILTER,
+    //   useClass: AuthorizationExceptionFilter,
+    // },
     // {
     //   provide: APP_PIPE,
     //   useClass: ValidationPipe, 

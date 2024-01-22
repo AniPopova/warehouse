@@ -49,7 +49,7 @@ __decorate([
 ], Warehouse.prototype, "deletedAt", void 0);
 __decorate([
     (0, typeorm_1.ManyToOne)(() => client_entity_1.Client),
-    (0, typeorm_1.JoinColumn)({ name: 'id' }),
+    (0, typeorm_1.JoinColumn)({ name: 'client_id' }),
     __metadata("design:type", client_entity_1.Client)
 ], Warehouse.prototype, "client", void 0);
 exports.Warehouse = Warehouse = __decorate([

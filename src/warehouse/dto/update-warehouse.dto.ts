@@ -13,7 +13,7 @@ export class UpdateWarehouseDto extends PartialType(CreateWarehouseDto) {
  @IsOptional()
   type?: ProductType;
 
-  @IsUUID('4', { message: 'Invalid UUID' })
+  @IsUUID()
   @IsNotEmpty()
   @IsOptional()
   clientId?: string;

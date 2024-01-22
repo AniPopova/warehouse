@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, DeleteDateColumn, UpdateDateColumn, Unique } from 'typeorm';
 
 export enum UserRights {
   OWNER = 'OWNER',
@@ -7,12 +7,13 @@ export enum UserRights {
 }
 
 @Entity('user')
+@Unique(['email'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', nullable: false})
-  name: string;
+  username: string;
 
   @Column({ type: 'varchar', nullable: false})
   password: string;

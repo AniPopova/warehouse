@@ -18,29 +18,89 @@ const typeorm_1 = require("@nestjs/typeorm");
 const typeorm_2 = require("typeorm");
 const product_entity_1 = require("./entities/product.entity");
 let ProductService = class ProductService {
-    constructor(clientRepository) {
-        this.clientRepository = clientRepository;
+    constructor(productRepository, logger) {
+        this.productRepository = productRepository;
+        this.logger = logger;
     }
-    create(createProductDto) {
-        return 'This action adds a new product';
+    async create(createProductDto) {
+        try {
+            const { name, type, unit } = createProductDto;
+            if (type === 'LIQUID') {
+                if (unit !== 'l') {
+                    throw new Error('Invalid combination: LIQUID type must have unit L.');
+                }
+            }
+            else {
+                if (unit !== 'kg') {
+                    throw new Error('Invalid combination: Non-liquid type must have unit kg.');
+                }
+            }
+            const newProduct = await this.productRepository.save({
+                name,
+                type,
+                unit
+            });
+            return newProduct;
+        }
+        catch (error) {
+            throw this.logger.error('Failure during creating product', error);
+        }
     }
-    findAll() {
-        return `This action returns all product`;
+    async findAll() {
+        return await this.productRepository.find();
     }
-    findOne(id) {
-        return `This action returns a #${id} product`;
+    async findOneById(id) {
+        const product = await this.productRepository.findOneBy({ id });
+        if (!product) {
+            throw new common_1.NotFoundException(`Product with id: ${id}, not found.`);
+        }
+        return product;
     }
-    update(id, updateProductDto) {
-        return `This action updates a #${id} product`;
+    async update(id, attrs) {
+        try {
+            const product = await this.productRepository.findOneBy({ id });
+            if (!product) {
+                throw new common_1.NotFoundException(`Product not found`);
+            }
+            Object.assign(product, attrs);
+            await this.productRepository.save(product);
+            return product;
+        }
+        catch (error) {
+            this.logger.error('Update not executed', error);
+        }
     }
-    remove(id) {
-        return `This action removes a #${id} product`;
+    async remove(id) {
+        try {
+            const product = await this.productRepository.findOneBy({ id });
+            if (!product) {
+                throw new common_1.NotFoundException('Product not found, try again.');
+            }
+            product.deletedAt = new Date();
+            return await this.productRepository.save(product);
+        }
+        catch (error) {
+            this.logger.error('Error during deleting product.', error);
+        }
+    }
+    async permanentDelete(id) {
+        try {
+            const product = await this.productRepository.findOneBy({ id });
+            if (!product) {
+                throw new common_1.NotFoundException(`Product not found.`);
+            }
+            return await this.productRepository.remove(product);
+        }
+        catch (error) {
+            this.logger.error('Error during permanent delete.', error);
+        }
     }
 };
 exports.ProductService = ProductService;
 exports.ProductService = ProductService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(product_entity_1.Product)),
-    __metadata("design:paramtypes", [typeorm_2.Repository])
+    __metadata("design:paramtypes", [typeorm_2.Repository,
+        common_1.Logger])
 ], ProductService);
 //# sourceMappingURL=product.service.js.map

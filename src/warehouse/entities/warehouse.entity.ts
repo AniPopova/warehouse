@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, Generated, ManyToOne, JoinColumn, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 import { Client } from 'src/client/entities/client.entity'; 
 import { ProductType } from 'src/product/entities/product.entity';
+
 
 @Entity('warehouse')
 export class Warehouse {
@@ -30,6 +31,6 @@ export class Warehouse {
   deletedAt: Date;
 
   @ManyToOne(() => Client)
-  @JoinColumn({ name: 'id' })
+  @JoinColumn({ name: 'client_id' })
   client: Client;
 }

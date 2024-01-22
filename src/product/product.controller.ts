@@ -1,34 +1,49 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Access } from 'src/decorators/access.decorator';
+import { UserRights } from 'src/user/entities/user.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 @Controller('product')
+@UseGuards(AuthGuard)
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto) {
-    return this.productService.create(createProductDto);
+  @Access(UserRights.OWNER, UserRights.OPERATOR)
+  async create(@Body() createProductDto: CreateProductDto) {
+    return await this.productService.create(createProductDto);
   }
 
   @Get()
-  findAll() {
-    return this.productService.findAll();
+  @Access(UserRights.OWNER, UserRights.OPERATOR, UserRights.VIEWER)
+  async findAll() {
+    return await this.productService.findAll();
   }
 
-  @Get('/id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  @Get(':id')
+  @Access(UserRights.OWNER, UserRights.OPERATOR, UserRights.VIEWER)
+  async findOne(@Param('id') id: string) {
+    return await this.productService.findOneById(id);
   }
 
-  @Patch('/id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+  @Patch(':id')
+  @Access(UserRights.OWNER, UserRights.OPERATOR)
+  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+    return await this.productService.update(id, updateProductDto);
   }
 
-  @Delete('/id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  @Delete(':id')
+  @Access(UserRights.OWNER, UserRights.OPERATOR)
+  async remove(@Param('id') id: string) {
+    return await this.productService.remove(id);
+  }
+
+  @Delete('perm/:id')
+  @Access(UserRights.OWNER)
+  async permRemove(@Param('id') id: string) {
+    return await this.productService.permanentDelete(id);
   }
 }

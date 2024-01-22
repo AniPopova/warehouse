@@ -22,33 +22,88 @@ let InvoiceService = class InvoiceService {
         this.invoiceRepository = invoiceRepository;
         this.logger = logger;
     }
-    findAll() {
-        return this.invoiceRepository.find();
+    async createInvoice(createInvoiceDto) {
+        try {
+            const { orderId } = createInvoiceDto;
+            const newInvoice = await this.invoiceRepository.save({
+                orderId,
+            });
+            return newInvoice;
+        }
+        catch (error) {
+            this.logger.error('Impossible create', error);
+        }
     }
-    findOneBy(id) {
-        return this.invoiceRepository.findOneByOrFail({ id });
+    async findAll() {
+        const invoices = this.invoiceRepository.find();
+        if ((await invoices).length === 0) {
+            throw new common_1.NotFoundException('DB is empty!');
+        }
+        return invoices;
+    }
+    async findOneBy(id) {
+        try {
+            const invoice = await this.invoiceRepository.findOneBy({ id });
+            if (!invoice) {
+                throw new common_1.NotFoundException(`Invoice with id: ${id}, not found.`);
+            }
+            return invoice;
+        }
+        catch (error) {
+            this.logger.error(`Error during search of invoice.`, error);
+        }
+    }
+    async findOne(orderId) {
+        try {
+            const invoice = await this.invoiceRepository.findOneBy({ orderId });
+            if (!invoice) {
+                throw new common_1.NotFoundException(`Invoice not found.`);
+            }
+            return invoice;
+        }
+        catch (error) {
+            this.logger.error(`Error during search of invoice.`, error);
+        }
     }
     async update(id, attrs) {
-        const invoice = await this.findOneBy(id);
-        if (!invoice) {
-            throw new common_1.NotFoundException(`There is no invoice with such id:${id}.`);
+        try {
+            const invoice = await this.findOneBy(id);
+            if (!invoice) {
+                throw new common_1.NotFoundException(`There is no invoice with such id:${id}.`);
+            }
+            Object.assign(invoice, attrs);
+            await this.invoiceRepository.save(invoice);
+            return invoice;
         }
-        Object.assign(invoice, attrs);
-        await this.invoiceRepository.save(invoice);
-        return invoice;
+        catch (error) {
+            this.logger.error('Update not executed', error);
+        }
     }
     async remove(id) {
         try {
             const invoice = await this.invoiceRepository.findOneBy({ id });
             if (!invoice) {
-                throw new common_1.NotFoundException(`Invoice with id: ${id} not found`);
+                throw new common_1.NotFoundException(`Invoice not found`);
             }
             invoice.deletedAt = new Date();
             await this.invoiceRepository.save(invoice);
-            return `Invoice with id: ${id} removed successfully.`;
+            return `Invoice removed successfully.`;
         }
         catch (error) {
-            this.logger.error(`Error during soft delete of an invoice`, error);
+            this.logger.error(`Error delete of invoice`, error);
+        }
+    }
+    async permanentDelete(id) {
+        try {
+            const invoice = await this.invoiceRepository.findOneBy({ id });
+            if (!invoice) {
+                throw new common_1.NotFoundException(`Invoice not found.`);
+            }
+            await this.invoiceRepository.remove(invoice);
+            return `Invoice permanently removed.`;
+        }
+        catch (error) {
+            this.logger.error('Error during permanently deleting warehouse.', error);
         }
     }
 };

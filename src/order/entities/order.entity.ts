@@ -33,7 +33,7 @@ export class Order {
   deletedAt: Date;
 
   @ManyToOne(() => Client)
-  @JoinColumn({ name: 'id' })
+  @JoinColumn({ name: 'client_id' })
   client: Client;
 }
 
@@ -46,11 +46,11 @@ export class OrderSubscriber implements EntitySubscriberInterface<Order> {
 
   async afterInsert(event: InsertEvent<Order>) {
     const order = event.entity;
-
+    const orderDetail = event.entity;
     if (order.type === OrderType.ORDER) {
       const invoice = new Invoice();
       invoice.orderId = order.id;
-      await Invoice.save(invoice);
+      Invoice.save(invoice);
     }
   }
 

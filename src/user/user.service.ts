@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { User, UserRights } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,19 +7,16 @@ import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  findOne(name: string) {
-    throw new Error('Method not implemented.');
-  }
   constructor(@InjectRepository(User) 
   private readonly userRepository: UserRepository, 
   private readonly logger: Logger) { }
 
-  async createUser(createUserDto: CreateUserDto){
-    const { name, password, email, userRole } = createUserDto;
+  async create(createUserDto: CreateUserDto){
+    const { username, password, email, userRole } = createUserDto;
     const chosenRole = userRole !== undefined ? userRole : UserRights.VIEWER;
 
     const newUser = await this.userRepository.save({
-      name,
+      username,
       password,
       email,
       userRole: chosenRole,
@@ -29,29 +26,55 @@ export class UserService {
   }
 
 
-  findAll() {
-    return this.userRepository.find();
+  async findAll() {
+    const users =  this.userRepository.find();
+    if ((await users).length === 0) {
+      throw new NotFoundException('DB is empty!');
+    }
+    return users;
   }
 
-  async findOneById(id: string) {
+  async findOneById(id: string): Promise<User | null> {
     try {
-      return await this.userRepository.findOneBy({id});
+      const user = await this.userRepository.findOneBy({ id });
+
+      if (!user) {
+        throw new NotFoundException(`User not found`);
+      }
+      return user;
     } catch (error) {
-      if (error.name === 'EntityNotFound') {
-        throw new NotFoundException(`User with id ${id} not found`);
-      }
-      else if(error.name === 'UnauthorizedException'){
-        throw new UnauthorizedException('Do do not have rights to execute this action!')
-      }
       this.logger.error('Error during search user', error);
-      throw error; 
+    }
+  }
+
+  async findOneByEmail(email: string): Promise<User | null> {
+    try {
+      const user = await this.userRepository.findOneBy({ email });
+      if (!user) {
+        throw new NotFoundException(`User not found`);
+      }
+      return user;
+    } catch (error) {
+      this.logger.error('Error during search user', error);
+    }
+  }
+
+  async findOneByUserName(username: string): Promise<User | null> {
+    try {
+      const user = await this.userRepository.findOneBy({ username });
+      if (!user) {
+        throw new NotFoundException(`User not found`);
+      }
+      return user;
+    } catch (error) {
+      this.logger.error('Error during search user', error);
     }
   }
 
   async update(id: string, attrs: Partial<User>) {
     const user = await this.userRepository.findOneBy({ id });
     if (!user) {
-      throw new NotFoundException(`User with id: ${id} not found!`);
+      throw new NotFoundException(`User not found!`);
     }
     Object.assign(user, attrs);
     await this.userRepository.save(user);
@@ -60,22 +83,23 @@ export class UserService {
 
   async remove(id: string) {
     const user = await this.userRepository.findOneBy({ id });
-
     if (!user) {
-      throw new NotFoundException(`User with id: ${id} not found!`);
+      throw new NotFoundException(`User not found!`);
     }
     user.deletedAt = new Date();
     await this.userRepository.save(user);
-    return `User with id: ${id} removed successfully.`
+    return `User removed successfully.`
   }
 
-
-  async findOneBy(email: string): Promise<User> {
+  async permanentDelete(id: string) {
     try {
-      return await this.userRepository.findOneBy({ email });
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new NotFoundException(`User not found.`);
+      }
+      return await this.userRepository.remove(user);
     } catch (error) {
-      this.logger.error('Error during searching user', error);
-      throw error; 
+      this.logger.error('Error during permanent delete.', error);
     }
   }
 }

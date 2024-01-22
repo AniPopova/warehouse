@@ -19,58 +19,71 @@ const update_invoice_dto_1 = require("./dto/update-invoice.dto");
 const access_decorator_1 = require("../decorators/access.decorator");
 const user_entity_1 = require("../user/entities/user.entity");
 const user_role_guard_1 = require("../user/user-role.guard");
+const auth_guard_1 = require("../auth/auth.guard");
 let InvoiceController = class InvoiceController {
     constructor(invoiceService) {
         this.invoiceService = invoiceService;
     }
-    findAll() {
-        return this.invoiceService.findAll();
+    async findAll() {
+        return await this.invoiceService.findAll();
     }
-    findOne(id) {
-        return this.invoiceService.findOneBy(id);
+    async findOne(id) {
+        return await this.invoiceService.findOneBy(id);
     }
-    update(id, updateInvoiceDto) {
-        return this.invoiceService.update(id, updateInvoiceDto);
+    async update(id, updateInvoiceDto) {
+        return await this.invoiceService.update(id, updateInvoiceDto);
     }
-    remove(id) {
-        return this.invoiceService.remove(id);
+    async remove(id) {
+        return await this.invoiceService.remove(id);
+    }
+    async permDelete(id) {
+        return await this.invoiceService.permanentDelete(id);
     }
 };
 exports.InvoiceController = InvoiceController;
 __decorate([
     (0, common_1.Get)(),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], InvoiceController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], InvoiceController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
     (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
-    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, update_invoice_dto_1.UpdateInvoiceDto]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], InvoiceController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
-    (0, common_1.UseGuards)(user_role_guard_1.UserRoleGuard),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], InvoiceController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Delete)('perm/:id'),
+    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], InvoiceController.prototype, "permDelete", null);
 exports.InvoiceController = InvoiceController = __decorate([
     (0, common_1.Controller)('invoice'),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, user_role_guard_1.UserRoleGuard),
     __metadata("design:paramtypes", [invoice_service_1.InvoiceService])
 ], InvoiceController);
 //# sourceMappingURL=invoice.controller.js.map

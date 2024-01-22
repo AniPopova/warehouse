@@ -1,32 +1,86 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateOrderDetailDto } from './dto/create-order_detail.dto';
-import { UpdateOrderDetailDto } from './dto/update-order_detail.dto';
 import { OrderDetail } from './entities/order_detail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+
 @Injectable()
 export class OrderDetailsService {
 
-  constructor(@InjectRepository(OrderDetail) private clientRepository: Repository<OrderDetail>) {}
+  constructor(
+    @InjectRepository(OrderDetail) private readonly orderDetailRepository: Repository<OrderDetail>,
+    private readonly logger: Logger) { }
 
-  create(createOrderDetailDto: CreateOrderDetailDto) {
-    return 'This action adds a new orderDetail';
+  async create(createOrderDetailDto: CreateOrderDetailDto) {
+    try {
+      const orderDetails = this.orderDetailRepository.create(createOrderDetailDto);
+      return this.orderDetailRepository.save(orderDetails);
+    } catch (error) {
+      this.logger.error('Impossible creation', error);
+    }
   }
 
-  findAll() {
-    return `This action returns all orderDetails`;
+  async findAll(): Promise<OrderDetail[]> {
+    const orderDetails =  this.orderDetailRepository.find();
+      if ((await orderDetails).length === 0) {
+        throw new NotFoundException('DB is empty!');
+      }
+      return orderDetails;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} orderDetail`;
+  async findOneById(id: string): Promise<OrderDetail | null> {
+    try {
+      const orderDetail = await this.orderDetailRepository.findOneBy({ id });
+      if (!orderDetail) {
+        throw new NotFoundException();
+      }
+      return orderDetail;
+    } catch (error) {
+      this.logger.error(`Error search details by id: ${id}`, error);
+      throw new BadRequestException('Error finding details by id.');
+    }
+
   }
 
-  update(id: number, updateOrderDetailDto: UpdateOrderDetailDto) {
-    return `This action updates a #${id} orderDetail`;
+  async update(id: string, attrs: Partial<OrderDetail>) {
+    try {
+      const orderDetail = await this.orderDetailRepository.findOneBy({ id });
+      if (!orderDetail) {
+        throw new NotFoundException(`Details with id:${id} not found`);
+      }
+
+      Object.assign(orderDetail, attrs);
+      await this.orderDetailRepository.save(orderDetail);
+      return orderDetail;
+    } catch (error) {
+      this.logger.error('Update not executed', error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} orderDetail`;
+  async remove(id: string) {
+    try {
+      const od = await this.orderDetailRepository.findOneBy({ id });
+      if (!od) {
+        throw new NotFoundException(`Data not found`);
+      }
+      od.deletedAt = new Date();
+      await this.orderDetailRepository.save(od);
+      return `Details removed successfully`;
+    } catch (error) {
+      this.logger.error('Error during deleting data.', error);
+    }
+  }
+
+  async permanentDelete(id: string) {
+    try {
+      const orderDetail = await this.orderDetailRepository.findOneBy({ id });
+      if (!orderDetail) {
+        throw new NotFoundException(`Data not found.`);
+      }
+      return await this.orderDetailRepository.remove(orderDetail);
+    } catch (error) {
+      this.logger.error('Error during permanent delete.', error);
+    }
   }
 }

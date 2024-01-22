@@ -5,7 +5,7 @@ export declare enum UserRights {
 }
 export declare class User {
     id: string;
-    name: string;
+    username: string;
     password: string;
     userRole: UserRights;
     email: string;

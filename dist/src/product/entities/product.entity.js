@@ -11,7 +11,6 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Product = exports.UnitType = exports.ProductType = void 0;
 const typeorm_1 = require("typeorm");
-const client_entity_1 = require("../../client/entities/client.entity");
 var ProductType;
 (function (ProductType) {
     ProductType["LIQUID"] = "LIQUID";
@@ -46,10 +45,6 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "unit", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'client_id', type: 'uuid', nullable: false }),
-    __metadata("design:type", String)
-], Product.prototype, "clientId", void 0);
-__decorate([
     (0, typeorm_1.CreateDateColumn)({ name: 'created_at' }),
     __metadata("design:type", Date)
 ], Product.prototype, "createdAt", void 0);
@@ -61,11 +56,6 @@ __decorate([
     (0, typeorm_1.DeleteDateColumn)({ name: 'deleted_at', nullable: true }),
     __metadata("design:type", Date)
 ], Product.prototype, "deletedAt", void 0);
-__decorate([
-    (0, typeorm_1.ManyToOne)(() => client_entity_1.Client),
-    (0, typeorm_1.JoinColumn)({ name: 'id' }),
-    __metadata("design:type", client_entity_1.Client)
-], Product.prototype, "client", void 0);
 exports.Product = Product = __decorate([
     (0, typeorm_1.Entity)('product')
 ], Product);

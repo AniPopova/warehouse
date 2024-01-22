@@ -1,12 +1,15 @@
+import { Logger } from '@nestjs/common';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { Repository } from 'typeorm';
 import { Warehouse } from './entities/warehouse.entity';
 export declare class WarehouseService {
     private warehouseRepository;
-    constructor(warehouseRepository: Repository<Warehouse>);
+    private readonly logger;
+    constructor(warehouseRepository: Repository<Warehouse>, logger: Logger);
     create(createWarehouseDto: CreateWarehouseDto): Promise<Warehouse>;
-    findAll(): Promise<Warehouse[]>;
-    findOneBy(id: string): Promise<Repository<Warehouse>>;
+    findAll(): Promise<Warehouse[] | null>;
+    findOneById(id: string): Promise<Warehouse>;
     update(id: string, attrs: Partial<Warehouse>): Promise<Warehouse>;
-    remove(id: string): Promise<string>;
+    softDelete(id: string): Promise<string>;
+    permanentDelete(id: string): Promise<Warehouse>;
 }

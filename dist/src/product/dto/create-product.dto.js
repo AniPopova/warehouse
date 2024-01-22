@@ -30,9 +30,4 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateProductDto.prototype, "unit", void 0);
-__decorate([
-    (0, class_validator_1.IsUUID)('4', { message: 'Invalid UUID' }),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreateProductDto.prototype, "clientId", void 0);
 //# sourceMappingURL=create-product.dto.js.map

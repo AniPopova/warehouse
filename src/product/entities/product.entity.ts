@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
-import { Client } from 'src/client/entities/client.entity'; 
 
 export enum ProductType {
   LIQUID = 'LIQUID',
@@ -29,9 +28,6 @@ export class Product {
   enum: UnitType})
   unit: UnitType;
 
-  @Column({ name: 'client_id', type: 'uuid', nullable: false})
-  clientId: string;
-
   @CreateDateColumn({name: 'created_at'})
   createdAt: Date;
 
@@ -40,8 +36,4 @@ export class Product {
 
   @DeleteDateColumn({name: 'deleted_at', nullable: true})
   deletedAt: Date;
-
-  @ManyToOne(() => Client)
-  @JoinColumn({ name: 'id' })
-  client: Client;
 }

@@ -15,24 +15,23 @@ class CreateOrderDetailDto {
 }
 exports.CreateOrderDetailDto = CreateOrderDetailDto;
 __decorate([
-    (0, class_validator_1.IsUUID)('4', { message: 'Invalid UUID' }),
+    (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateOrderDetailDto.prototype, "warehouseId", void 0);
 __decorate([
-    (0, class_validator_1.IsUUID)('4', { message: 'Invalid UUID' }),
+    (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateOrderDetailDto.prototype, "orderId", void 0);
 __decorate([
-    (0, class_validator_1.IsUUID)('4', { message: 'Invalid UUID' }),
+    (0, class_validator_1.IsUUID)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreateOrderDetailDto.prototype, "productId", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsPositive)(),
     __metadata("design:type", Number)
 ], CreateOrderDetailDto.prototype, "quantity", void 0);
 __decorate([

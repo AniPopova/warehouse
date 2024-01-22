@@ -7,4 +7,5 @@ export declare class InvoiceController {
     findOne(id: string): Promise<import("./entities/invoice.entity").Invoice>;
     update(id: string, updateInvoiceDto: UpdateInvoiceDto): Promise<import("./entities/invoice.entity").Invoice>;
     remove(id: string): Promise<string>;
+    permDelete(id: string): Promise<string>;
 }

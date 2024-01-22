@@ -1,4 +1,4 @@
-import { IsString, IsEnum, IsUUID, IsNotEmpty } from 'class-validator';
+import { IsString, IsEnum, IsNotEmpty } from 'class-validator';
 import { ProductType, UnitType } from '../entities/product.entity';
 
 
@@ -15,9 +15,5 @@ export class CreateProductDto {
   @IsEnum(UnitType)
   @IsNotEmpty()
   unit: UnitType;
-
-  @IsUUID('4', { message: 'Invalid UUID' })
-  @IsNotEmpty()
-  clientId: string;
 
 }

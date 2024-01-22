@@ -6,12 +6,13 @@ import { User } from './entities/user.entity';
 import { UserRoleGuard } from './user-role.guard';
 import { AuthService } from '../auth/auth.service';
 import { UserRepository } from './user.repository';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, UserRepository])],
   controllers: [UserController],
-  providers: [UserService, UserRoleGuard, Logger, AuthService],
+  providers: [UserService, UserRoleGuard, Logger, AuthService, AuthGuard],
   exports: [TypeOrmModule]
 })
 

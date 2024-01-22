@@ -8,3 +8,6 @@ export const Access = (...roles: UserRights[]) => SetMetadata('access:user_roles
 export const Serialize = (dto: ClassConstructor) => UseInterceptors(new SerializeInterceptor(dto));
 
 export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
+
+export const IS_PUBLIC_KEY = 'isPublic';
+export const Public = () => SetMetadata(IS_PUBLIC_KEY, true);

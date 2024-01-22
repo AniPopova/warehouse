@@ -7,9 +7,9 @@ import { CustomRepository } from 'db/typeorm-ex.decorator';
 export class UserRepository extends Repository<User> {
 
     async createUser(authCredentialsDto: AuthCredentialsDto) {
-      const { name, password, email, userRole } = authCredentialsDto;
+      const { username, password, email, userRole } = authCredentialsDto;
   
-      const user = this.create({ name, password, email, userRole });
+      const user = this.create({ username, password, email, userRole });
       await this.save(user);
     }
   }
