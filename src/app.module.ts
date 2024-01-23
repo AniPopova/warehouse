@@ -37,18 +37,6 @@ import { AuthController } from './auth/auth.controller';
   controllers: [AppController, AuthController],
   providers: [
     AppService,
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: AuthorizationExceptionFilter,
-    // },
-    // {
-    //   provide: APP_PIPE,
-    //   useClass: ValidationPipe, 
-    // },
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: UserRoleGuard,
-    // },
   ],
 })
 

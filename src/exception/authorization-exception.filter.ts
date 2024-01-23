@@ -10,11 +10,11 @@ export class AuthorizationExceptionFilter implements ExceptionFilter {
 
     const action = request.method; // Get the HTTP method (GET, POST, PUT, DELETE, etc.)
 
-    let message = 'You are not authorized to perform this action.';
+    let message: string;
 
     if (action === 'POST') {
       message = 'You are not authorized to perform create.';
-    } else if (action === 'PUT') {
+    } else if (action === 'PATCH') {
       message = 'You are not authorized to perform update.';
     } else if (action === 'DELETE') {
       message = 'You are not authorized to perform delete.';

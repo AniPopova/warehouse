@@ -12,7 +12,7 @@ const warehouse_service_1 = require("./warehouse.service");
 const warehouse_controller_1 = require("./warehouse.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const warehouse_entity_1 = require("./entities/warehouse.entity");
-const user_role_guard_1 = require("../user/user-role.guard");
+const user_role_guard_1 = require("../../guards/user-role.guard");
 let WarehouseModule = class WarehouseModule {
 };
 exports.WarehouseModule = WarehouseModule;

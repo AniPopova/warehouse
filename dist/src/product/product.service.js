@@ -32,7 +32,7 @@ let ProductService = class ProductService {
             }
             else {
                 if (unit !== 'kg') {
-                    throw new Error('Invalid combination: Non-liquid type must have unit kg.');
+                    throw new common_1.UnauthorizedException('Invalid combination: Non-liquid type must have unit kg.');
                 }
             }
             const newProduct = await this.productRepository.save({
@@ -67,7 +67,7 @@ let ProductService = class ProductService {
             return product;
         }
         catch (error) {
-            this.logger.error('Update not executed', error);
+            throw this.logger.error('Update not executed', error);
         }
     }
     async remove(id) {
@@ -80,7 +80,7 @@ let ProductService = class ProductService {
             return await this.productRepository.save(product);
         }
         catch (error) {
-            this.logger.error('Error during deleting product.', error);
+            throw this.logger.error('Error during deleting product.', error);
         }
     }
     async permanentDelete(id) {
@@ -89,10 +89,11 @@ let ProductService = class ProductService {
             if (!product) {
                 throw new common_1.NotFoundException(`Product not found.`);
             }
-            return await this.productRepository.remove(product);
+            await this.productRepository.remove(product);
+            return `Product deleted permanent.`;
         }
         catch (error) {
-            this.logger.error('Error during permanent delete.', error);
+            throw this.logger.error('Error during permanent delete.', error);
         }
     }
 };

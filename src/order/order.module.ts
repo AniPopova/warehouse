@@ -7,7 +7,7 @@ import { InvoiceService } from 'src/invoice/invoice.service';
 import { OrderDetailsService } from 'src/order_details/order_details.service';
 import { Invoice } from 'src/invoice/entities/invoice.entity';
 import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
-import { UserRoleGuard } from 'src/user/user-role.guard';
+import { UserRoleGuard } from 'guards/user-role.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Order, Invoice, OrderDetail])],
@@ -15,4 +15,4 @@ import { UserRoleGuard } from 'src/user/user-role.guard';
   providers: [OrderService, Logger, InvoiceService, OrderDetailsService, UserRoleGuard],
   exports: [TypeOrmModule]
 })
-export class OrderModule {}
+export class OrderModule { }

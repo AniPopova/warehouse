@@ -3,7 +3,7 @@ import { WarehouseService } from './warehouse.service';
 import { WarehouseController } from './warehouse.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Warehouse } from './entities/warehouse.entity';
-import { UserRoleGuard } from 'src/user/user-role.guard';
+import { UserRoleGuard } from 'guards/user-role.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Warehouse])],
@@ -11,4 +11,4 @@ import { UserRoleGuard } from 'src/user/user-role.guard';
   providers: [WarehouseService, Logger, UserRoleGuard],
   exports: [TypeOrmModule]
 })
-export class WarehouseModule {}
+export class WarehouseModule { }

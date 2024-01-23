@@ -1,4 +1,4 @@
-import { IsUUID, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsUUID, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateOrderDetailDto {
   @IsUUID()
@@ -20,5 +20,8 @@ export class CreateOrderDetailDto {
   @IsNumber()
   @IsNotEmpty()
   price: number;
+
+  @IsNumber()
+  totalPrice: number;
 
 }

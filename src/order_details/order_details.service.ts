@@ -14,10 +14,11 @@ export class OrderDetailsService {
 
   async create(createOrderDetailDto: CreateOrderDetailDto) {
     try {
+    
       const orderDetails = this.orderDetailRepository.create(createOrderDetailDto);
       return this.orderDetailRepository.save(orderDetails);
     } catch (error) {
-      this.logger.error('Impossible creation', error);
+      throw this.logger.error('Impossible creation', error);
     }
   }
 
@@ -33,11 +34,10 @@ export class OrderDetailsService {
     try {
       const orderDetail = await this.orderDetailRepository.findOneBy({ id });
       if (!orderDetail) {
-        throw new NotFoundException();
+        throw new NotFoundException('No records with such id.');
       }
       return orderDetail;
     } catch (error) {
-      this.logger.error(`Error search details by id: ${id}`, error);
       throw new BadRequestException('Error finding details by id.');
     }
 
@@ -54,7 +54,7 @@ export class OrderDetailsService {
       await this.orderDetailRepository.save(orderDetail);
       return orderDetail;
     } catch (error) {
-      this.logger.error('Update not executed', error);
+      throw this.logger.error('Update not executed', error);
     }
   }
 
@@ -68,7 +68,7 @@ export class OrderDetailsService {
       await this.orderDetailRepository.save(od);
       return `Details removed successfully`;
     } catch (error) {
-      this.logger.error('Error during deleting data.', error);
+      throw this.logger.error('Error during deleting data.', error);
     }
   }
 
@@ -80,7 +80,7 @@ export class OrderDetailsService {
       }
       return await this.orderDetailRepository.remove(orderDetail);
     } catch (error) {
-      this.logger.error('Error during permanent delete.', error);
+      throw this.logger.error('Error during permanent delete.', error);
     }
   }
 }

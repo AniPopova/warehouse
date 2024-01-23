@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -19,7 +19,7 @@ export class ProductService {
         }
       } else {
         if (unit !== 'kg') {
-          throw new Error('Invalid combination: Non-liquid type must have unit kg.');
+          throw new UnauthorizedException('Invalid combination: Non-liquid type must have unit kg.');
         }
       }
 
@@ -57,7 +57,7 @@ export class ProductService {
       await this.productRepository.save(product);
       return product;
     } catch (error) {
-      this.logger.error('Update not executed', error);
+      throw this.logger.error('Update not executed', error);
     }
   }
 
@@ -70,7 +70,7 @@ export class ProductService {
       product.deletedAt = new Date();
       return await this.productRepository.save(product);
     } catch (error) {
-      this.logger.error('Error during deleting product.', error);
+      throw this.logger.error('Error during deleting product.', error);
     }
   }
 
@@ -80,9 +80,10 @@ export class ProductService {
       if (!product) {
         throw new NotFoundException(`Product not found.`);
       }
-      return await this.productRepository.remove(product);
+      await this.productRepository.remove(product);
+      return `Product deleted permanent.`
     } catch (error) {
-      this.logger.error('Error during permanent delete.', error);
+      throw this.logger.error('Error during permanent delete.', error);
     }
   }
 }

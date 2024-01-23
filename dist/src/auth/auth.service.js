@@ -13,7 +13,9 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const user_service_1 = require("../user/user.service");
 const jwt_1 = require("@nestjs/jwt");
+const user_entity_1 = require("../user/entities/user.entity");
 const user_repository_1 = require("../user/user.repository");
+const bcrypt = require("bcrypt");
 let AuthService = class AuthService {
     constructor(userService, userRepository, jwtService, logger) {
         this.userService = userService;
@@ -21,40 +23,31 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
         this.logger = logger;
     }
-    async signup(email, password) {
-        const users = await this.userService.findAll();
-        if (users.length) {
-            throw new common_1.BadRequestException('email in use');
-        }
-    }
-    async signIn(email, pass) {
+    async signup(createUserDto) {
         try {
-            const user = await this.userService.findOneByEmail(email);
-            if (user && 'password' in user) {
-                const payload = { sub: user.id, username: user.username, role: user.userRole };
-                return {
-                    access_token: await this.jwtService.signAsync(payload),
-                };
+            const existingUser = await this.userService.findOneByEmail(createUserDto.email);
+            if (existingUser) {
+                throw new common_1.ConflictException('Email already exists');
             }
-            else {
-                throw new common_1.UnauthorizedException('You are not authorized to execute this action!');
-            }
+            const saltRounds = 10;
+            const hashedPassword = await bcrypt.hash(createUserDto.password, saltRounds);
+            const data = Object.assign({}, createUserDto, {
+                rights: user_entity_1.UserRights.VIEWER,
+                password: hashedPassword,
+            });
+            const returnedUserFromBase = await this.userService.create(createUserDto);
+            const payload = {
+                id: returnedUserFromBase.id,
+                email: returnedUserFromBase.email,
+                rights: returnedUserFromBase.userRole,
+            };
+            return { access_token: await this.jwtService.signAsync(payload) };
         }
         catch (error) {
-            this.logger.error('Error during user sign-in', error);
-            throw error;
-        }
-    }
-    async validateUser(email, password) {
-        try {
-            const user = await this.userRepository.findOneBy({ email });
-            if (user && user.password === password) {
-                return user;
+            if (error instanceof common_1.ConflictException) {
+                throw new common_1.ConflictException('Email already exists');
             }
-            return user;
-        }
-        catch (error) {
-            throw this.logger.error('Error during user validation', error);
+            throw new common_1.InternalServerErrorException('Internal Server Error');
         }
     }
 };

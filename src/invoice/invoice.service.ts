@@ -13,7 +13,7 @@ export class InvoiceService {
     private readonly logger: Logger,
   ) { }
 
-  async createInvoice(createInvoiceDto: CreateInvoiceDto): Promise<Invoice> {
+  async create (createInvoiceDto: CreateInvoiceDto): Promise<Invoice> {
     try {
       const { orderId } = createInvoiceDto;
       const newInvoice = await this.invoiceRepository.save({

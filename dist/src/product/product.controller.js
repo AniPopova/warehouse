@@ -19,7 +19,6 @@ const create_product_dto_1 = require("./dto/create-product.dto");
 const update_product_dto_1 = require("./dto/update-product.dto");
 const access_decorator_1 = require("../decorators/access.decorator");
 const user_entity_1 = require("../user/entities/user.entity");
-const auth_guard_1 = require("../auth/auth.guard");
 let ProductController = class ProductController {
     constructor(productService) {
         this.productService = productService;
@@ -46,7 +45,7 @@ let ProductController = class ProductController {
 exports.ProductController = ProductController;
 __decorate([
     (0, common_1.Post)(),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [create_product_dto_1.CreateProductDto]),
@@ -54,14 +53,14 @@ __decorate([
 ], ProductController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER, user_entity_1.UserRights.VIEWER),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProductController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER, user_entity_1.UserRights.VIEWER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -69,7 +68,7 @@ __decorate([
 ], ProductController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -78,7 +77,7 @@ __decorate([
 ], ProductController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -86,7 +85,7 @@ __decorate([
 ], ProductController.prototype, "remove", null);
 __decorate([
     (0, common_1.Delete)('perm/:id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -94,7 +93,6 @@ __decorate([
 ], ProductController.prototype, "permRemove", null);
 exports.ProductController = ProductController = __decorate([
     (0, common_1.Controller)('product'),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __metadata("design:paramtypes", [product_service_1.ProductService])
 ], ProductController);
 //# sourceMappingURL=product.controller.js.map

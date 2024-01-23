@@ -16,10 +16,8 @@ exports.OrderDetailsController = void 0;
 const common_1 = require("@nestjs/common");
 const order_details_service_1 = require("./order_details.service");
 const update_order_detail_dto_1 = require("./dto/update-order_detail.dto");
-const user_role_guard_1 = require("../user/user-role.guard");
 const access_decorator_1 = require("../decorators/access.decorator");
 const user_entity_1 = require("../user/entities/user.entity");
-const auth_guard_1 = require("../auth/auth.guard");
 let OrderDetailsController = class OrderDetailsController {
     constructor(orderDetailsService) {
         this.orderDetailsService = orderDetailsService;
@@ -43,14 +41,14 @@ let OrderDetailsController = class OrderDetailsController {
 exports.OrderDetailsController = OrderDetailsController;
 __decorate([
     (0, common_1.Get)(),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER, user_entity_1.UserRights.VIEWER),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], OrderDetailsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER, user_entity_1.UserRights.VIEWER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -58,7 +56,7 @@ __decorate([
 ], OrderDetailsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -67,7 +65,7 @@ __decorate([
 ], OrderDetailsController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -75,7 +73,7 @@ __decorate([
 ], OrderDetailsController.prototype, "remove", null);
 __decorate([
     (0, common_1.Delete)('perm/:id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -83,7 +81,6 @@ __decorate([
 ], OrderDetailsController.prototype, "permRemove", null);
 exports.OrderDetailsController = OrderDetailsController = __decorate([
     (0, common_1.Controller)('order-details'),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard, user_role_guard_1.UserRoleGuard),
     __metadata("design:paramtypes", [order_details_service_1.OrderDetailsService])
 ], OrderDetailsController);
 //# sourceMappingURL=order_details.controller.js.map

@@ -6,7 +6,7 @@ export declare class InvoiceService {
     private readonly invoiceRepository;
     private readonly logger;
     constructor(invoiceRepository: Repository<Invoice>, logger: Logger);
-    createInvoice(createInvoiceDto: CreateInvoiceDto): Promise<Invoice>;
+    create(createInvoiceDto: CreateInvoiceDto): Promise<Invoice>;
     findAll(): Promise<Invoice[] | null>;
     findOneBy(id: string): Promise<Invoice>;
     findOne(orderId: string): Promise<Invoice>;

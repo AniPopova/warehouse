@@ -15,25 +15,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
-const access_decorator_1 = require("../decorators/access.decorator");
+const create_user_dto_1 = require("../user/dto/create-user.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    signIn(signInDto) {
-        return this.authService.signIn(signInDto.email, signInDto.password);
+    async signup(createUserDto) {
+        try {
+            const result = await this.authService.signup(createUserDto);
+            return { message: 'Signup successful', ...result };
+        }
+        catch (error) {
+            if (error instanceof common_1.BadRequestException) {
+                throw new common_1.BadRequestException(error.message);
+            }
+            throw new common_1.BadRequestException('Signup failed');
+        }
     }
 };
 exports.AuthController = AuthController;
 __decorate([
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    (0, access_decorator_1.Public)(),
-    (0, common_1.Post)('/login'),
+    (0, common_1.Post)('signup'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AuthController.prototype, "signIn", null);
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "signup", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])

@@ -3,7 +3,7 @@ import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { Repository } from 'typeorm';
 import { Warehouse } from './entities/warehouse.entity';
 export declare class WarehouseService {
-    private warehouseRepository;
+    private readonly warehouseRepository;
     private readonly logger;
     constructor(warehouseRepository: Repository<Warehouse>, logger: Logger);
     create(createWarehouseDto: CreateWarehouseDto): Promise<Warehouse>;

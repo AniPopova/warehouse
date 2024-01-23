@@ -3,7 +3,7 @@ import { ClientService } from './client.service';
 import { ClientController } from './client.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Client } from './entities/client.entity';
-import { UserRoleGuard } from 'src/user/user-role.guard';
+import { UserRoleGuard } from 'guards/user-role.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Client])],
@@ -11,4 +11,4 @@ import { UserRoleGuard } from 'src/user/user-role.guard';
   providers: [ClientService, UserRoleGuard, Logger],
   exports: [TypeOrmModule]
 })
-export class ClientModule {}
+export class ClientModule { }

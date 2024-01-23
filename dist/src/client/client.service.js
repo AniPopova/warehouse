@@ -47,7 +47,7 @@ let ClientService = class ClientService {
             return client;
         }
         catch (error) {
-            this.logger.error(`Error during search of client.`, error);
+            throw new common_1.NotFoundException(`Error during search of client.`, error);
         }
     }
     async update(id, attrs) {
@@ -57,11 +57,10 @@ let ClientService = class ClientService {
                 throw new common_1.NotFoundException(`Client with such id not found`);
             }
             Object.assign(client, attrs);
-            await this.clientRepository.save(client);
-            return client;
+            return await this.clientRepository.save(client);
         }
         catch (error) {
-            this.logger.error('Update not executed', error);
+            throw new common_1.NotFoundException('Update not executed. User does not exist or deleted', error);
         }
     }
     async softDelete(id) {

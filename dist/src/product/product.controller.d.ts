@@ -13,5 +13,5 @@ export declare class ProductController {
     findOne(id: string): Promise<import("./entities/product.entity").Product>;
     update(id: string, updateProductDto: UpdateProductDto): Promise<import("./entities/product.entity").Product>;
     remove(id: string): Promise<import("./entities/product.entity").Product>;
-    permRemove(id: string): Promise<import("./entities/product.entity").Product>;
+    permRemove(id: string): Promise<string>;
 }

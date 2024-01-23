@@ -16,7 +16,7 @@ const invoice_service_1 = require("../invoice/invoice.service");
 const order_details_service_1 = require("../order_details/order_details.service");
 const invoice_entity_1 = require("../invoice/entities/invoice.entity");
 const order_detail_entity_1 = require("../order_details/entities/order_detail.entity");
-const user_role_guard_1 = require("../user/user-role.guard");
+const user_role_guard_1 = require("../../guards/user-role.guard");
 let OrderModule = class OrderModule {
 };
 exports.OrderModule = OrderModule;

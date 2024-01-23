@@ -15,5 +15,5 @@ export declare class ProductService {
     findOneById(id: string): Promise<Product | null>;
     update(id: string, attrs: Partial<Product | null>): Promise<Product>;
     remove(id: string): Promise<Product>;
-    permanentDelete(id: string): Promise<Product>;
+    permanentDelete(id: string): Promise<string>;
 }

@@ -6,7 +6,11 @@ import { CreateInvoiceDto } from 'src/invoice/dto/create-invoice.dto';
 export declare class OrderController {
     private readonly orderService;
     constructor(orderService: OrderService);
-    create(createOrderDto: CreateOrderDto, createOrderDetailDto: CreateOrderDetailDto, createInvoice?: CreateInvoiceDto): Promise<{
+    create(body: {
+        createOrderDto: CreateOrderDto;
+        createOrderDetailDto: CreateOrderDetailDto;
+        createInvoiceDto: CreateInvoiceDto;
+    }): Promise<{
         order: {
             type: import("./entities/order.entity").OrderType;
             clientId: string;
@@ -17,6 +21,7 @@ export declare class OrderController {
             productId: string;
             quantity: number;
             price: number;
+            totalPrice: number;
         } & import("../order_details/entities/order_detail.entity").OrderDetail;
         invoice: {
             orderId: string;
@@ -32,6 +37,7 @@ export declare class OrderController {
             productId: string;
             quantity: number;
             price: number;
+            totalPrice: number;
         } & import("../order_details/entities/order_detail.entity").OrderDetail;
         invoice?: undefined;
     }>;

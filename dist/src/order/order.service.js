@@ -37,27 +37,33 @@ let OrderService = class OrderService {
                 type,
                 clientId,
             });
+            console.log('New Order ID:', newOrder.id);
             const { warehouseId, productId, quantity, price } = createOrderDetailDto;
+            const totalPrice = quantity * price;
             const newOrderDetail = await this.orderDetailsRepository.save({
                 warehouseId,
                 orderId: newOrder.id,
                 productId,
                 quantity,
                 price,
+                totalPrice,
             });
-            this.orderDetailsService.create(createOrderDetailDto);
-            if (type === 'ORDER') {
+            await this.orderDetailsService.create(createOrderDetailDto);
+            if (newOrder.type === 'ORDER') {
+                const { orderId } = createInvoiceDto;
                 const newInvoice = await this.invoiceRepository.save({
                     orderId: newOrder.id,
                 });
-                if (createInvoiceDto) {
-                    await this.invoiceService.createInvoice(createInvoiceDto);
+                await this.invoiceService.create(createInvoiceDto);
+                if (newInvoice) {
+                    console.log('New Invoice Number:', newInvoice.invNumber);
                 }
                 return { order: newOrder, orderDetail: newOrderDetail, invoice: newInvoice };
             }
             return { order: newOrder, orderDetail: newOrderDetail };
         }
         catch (error) {
+            console.error('Error in creating order:', error);
             throw this.logger.error('Failure in creating order.', error);
         }
     }

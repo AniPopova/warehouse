@@ -22,10 +22,104 @@ export class OrderService {
     private readonly logger: Logger,
   ) {}
 
+  // async create(
+  //   createOrderDto: CreateOrderDto,
+  //   createOrderDetailDto: CreateOrderDetailDto,
+  //   createInvoiceDto?: CreateInvoiceDto
+  // ) {
+  //   try {
+  //     const { type, clientId } = createOrderDto;
+  //     const newOrder = await this.orderRepository.save({
+  //       type,
+  //       clientId,
+  //     });
+  
+  //     const { warehouseId, productId, quantity, price } = createOrderDetailDto;
+  //     const totalPrice = quantity * price;
+  
+  //     const newOrderDetail = await this.orderDetailsRepository.save({
+  //       warehouseId,
+  //       orderId: newOrder.id,
+  //       productId,
+  //       quantity,
+  //       price,
+  //       totalPrice
+  //     });
+  //     this.orderDetailsService.create(createOrderDetailDto);
+
+  //     if (type === 'ORDER') {
+
+  //       const newInvoice = await this.invoiceRepository.save({
+  //         orderId: newOrder.id,
+  //       });
+
+  //       if (createInvoiceDto) {
+  //         await this.invoiceService.createInvoice(createInvoiceDto);
+  //       }
+  //       return { order: newOrder, orderDetail: newOrderDetail, invoice: newInvoice };
+  //     }
+
+  //     return { order: newOrder, orderDetail: newOrderDetail };
+  //   } catch (error) {
+  //     throw this.logger.error('Failure in creating order.', error);
+  //   }
+  // }
+
+  // async create(
+  //   createOrderDto: CreateOrderDto,
+  //   createOrderDetailDto: CreateOrderDetailDto,
+  //   createInvoiceDto: CreateInvoiceDto
+  // ) {
+  //   try {
+  //     const { type, clientId } = createOrderDto;
+  //     const newOrder = await this.orderRepository.save({
+  //       type,
+  //       clientId,
+  //     });
+  //    await this.orderRepository.create(newOrder);
+      
+  //     console.log('New Order ID:', newOrder.id);
+  
+  //     const { warehouseId,  productId, quantity, price } = createOrderDetailDto;
+  //     const totalPrice = quantity * price;
+  
+  //     const newOrderDetail = await this.orderDetailsRepository.save({
+  //       warehouseId,
+  //       orderId: newOrder.id, 
+  //       productId,
+  //       quantity,
+  //       price,
+  //       totalPrice,
+  //     });
+
+  //     await this.orderDetailsService.create(createOrderDetailDto);
+  
+  //     if (newOrder.type === 'ORDER') {
+  //       const { orderId } = createInvoiceDto;
+  //       const newInvoice = await this.invoiceRepository.save({
+  //         orderId: newOrder.id,
+  //       });
+  // await this.invoiceService.create(createInvoiceDto);
+  //       if (newInvoice) {
+          
+  //         console.log(newInvoice.invNumber);
+          
+  //       }
+  //       return { invoice: newInvoice };
+  //     }
+  
+  //     return { newOrder };
+  //   } catch (error) {
+
+  //     console.error('Error in creating order:', error);
+  //     throw this.logger.error('Failure in creating order.', error);
+  //   }
+  // }
+  
   async create(
     createOrderDto: CreateOrderDto,
     createOrderDetailDto: CreateOrderDetailDto,
-    createInvoiceDto?: CreateInvoiceDto
+    createInvoiceDto: CreateInvoiceDto
   ) {
     try {
       const { type, clientId } = createOrderDto;
@@ -34,34 +128,44 @@ export class OrderService {
         clientId,
       });
   
+      console.log('New Order ID:', newOrder.id);
+  
       const { warehouseId, productId, quantity, price } = createOrderDetailDto;
- 
+      const totalPrice = quantity * price;
+  
       const newOrderDetail = await this.orderDetailsRepository.save({
         warehouseId,
         orderId: newOrder.id,
         productId,
         quantity,
         price,
+        totalPrice,
       });
-      this.orderDetailsService.create(createOrderDetailDto);
-
-      if (type === 'ORDER') {
-
+  
+      await this.orderDetailsService.create(createOrderDetailDto);
+  
+      if (newOrder.type === 'ORDER') {
+        const { orderId } = createInvoiceDto;
         const newInvoice = await this.invoiceRepository.save({
           orderId: newOrder.id,
         });
-
-        if (createInvoiceDto) {
-          await this.invoiceService.createInvoice(createInvoiceDto);
+  
+        await this.invoiceService.create(createInvoiceDto);
+  
+        if (newInvoice) {
+          console.log('New Invoice Number:', newInvoice.invNumber);
         }
+  
         return { order: newOrder, orderDetail: newOrderDetail, invoice: newInvoice };
       }
-
+  
       return { order: newOrder, orderDetail: newOrderDetail };
     } catch (error) {
+      console.error('Error in creating order:', error);
       throw this.logger.error('Failure in creating order.', error);
     }
   }
+
 
   async findAll(){
     const orders =  this.orderRepository.find();

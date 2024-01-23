@@ -11,7 +11,7 @@ export class OrderDetail {
   @Column({ name: 'warehouse_id', type: 'uuid', nullable: false})
   warehouseId: string;
 
-  @Column({ name: 'order_id', type: 'uuid', nullable: false})
+  @Column({ name: 'order_id', nullable: false})
   orderId: string;
 
   @Column({ name: 'product_id', type: 'uuid', nullable: false })

@@ -22,7 +22,7 @@ let InvoiceService = class InvoiceService {
         this.invoiceRepository = invoiceRepository;
         this.logger = logger;
     }
-    async createInvoice(createInvoiceDto) {
+    async create(createInvoiceDto) {
         try {
             const { orderId } = createInvoiceDto;
             const newInvoice = await this.invoiceRepository.save({

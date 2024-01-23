@@ -12,7 +12,7 @@ const order_details_service_1 = require("./order_details.service");
 const order_details_controller_1 = require("./order_details.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const order_detail_entity_1 = require("./entities/order_detail.entity");
-const user_role_guard_1 = require("../user/user-role.guard");
+const user_role_guard_1 = require("../../guards/user-role.guard");
 let OrderDetailsModule = class OrderDetailsModule {
 };
 exports.OrderDetailsModule = OrderDetailsModule;

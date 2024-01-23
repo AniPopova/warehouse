@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,17 +7,18 @@ import { Warehouse } from './entities/warehouse.entity';
 
 @Injectable()
 export class WarehouseService {
-  constructor(@InjectRepository(Warehouse) private warehouseRepository: Repository<Warehouse>,
+  constructor(@InjectRepository(Warehouse) private readonly warehouseRepository: Repository<Warehouse>,
     private readonly logger: Logger) { }
 
-  async create(createWarehouseDto: CreateWarehouseDto): Promise<Warehouse> {
+  async create(createWarehouseDto: CreateWarehouseDto){
     try {
-      const newWarehouse = this.warehouseRepository.create(createWarehouseDto);
+      const newWarehouse = this.warehouseRepository.create(createWarehouseDto);      
       return await this.warehouseRepository.save(newWarehouse);
     } catch (error) {
       this.logger.error('Impossible create', error);
     }
   }
+  
 
   async findAll(): Promise<Warehouse[] | null> {
       const warehouses =  this.warehouseRepository.find();

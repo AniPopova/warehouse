@@ -15,19 +15,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.OrderController = void 0;
 const common_1 = require("@nestjs/common");
 const order_service_1 = require("./order.service");
-const create_order_dto_1 = require("./dto/create-order.dto");
 const update_order_dto_1 = require("./dto/update-order.dto");
 const access_decorator_1 = require("../decorators/access.decorator");
 const user_entity_1 = require("../user/entities/user.entity");
-const create_order_detail_dto_1 = require("../order_details/dto/create-order_detail.dto");
-const create_invoice_dto_1 = require("../invoice/dto/create-invoice.dto");
-const auth_guard_1 = require("../auth/auth.guard");
 let OrderController = class OrderController {
     constructor(orderService) {
         this.orderService = orderService;
     }
-    async create(createOrderDto, createOrderDetailDto, createInvoice) {
-        return await this.orderService.create(createOrderDto, createOrderDetailDto);
+    async create(body) {
+        const { createOrderDto, createOrderDetailDto, createInvoiceDto } = body;
+        return await this.orderService.create(createOrderDto, createOrderDetailDto, createInvoiceDto);
     }
     async findAll() {
         return await this.orderService.findAll();
@@ -48,22 +45,22 @@ let OrderController = class OrderController {
 exports.OrderController = OrderController;
 __decorate([
     (0, common_1.Post)(),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_order_dto_1.CreateOrderDto, create_order_detail_dto_1.CreateOrderDetailDto, create_invoice_dto_1.CreateInvoiceDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "create", null);
 __decorate([
     (0, common_1.Get)(),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER, user_entity_1.UserRights.VIEWER),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], OrderController.prototype, "findAll", null);
 __decorate([
     (0, common_1.Get)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.VIEWER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OPERATOR, user_entity_1.UserRights.OWNER, user_entity_1.UserRights.VIEWER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -71,7 +68,7 @@ __decorate([
 ], OrderController.prototype, "findOne", null);
 __decorate([
     (0, common_1.Patch)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.OPERATOR),
     __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -80,7 +77,7 @@ __decorate([
 ], OrderController.prototype, "update", null);
 __decorate([
     (0, common_1.Delete)(':id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.VIEWER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER, user_entity_1.UserRights.VIEWER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -88,7 +85,7 @@ __decorate([
 ], OrderController.prototype, "remove", null);
 __decorate([
     (0, common_1.Delete)('perm/:id'),
-    (0, access_decorator_1.Access)(user_entity_1.UserRights.OWNER),
+    (0, access_decorator_1.Roles)(user_entity_1.UserRights.OWNER),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -96,7 +93,6 @@ __decorate([
 ], OrderController.prototype, "permanentDelete", null);
 exports.OrderController = OrderController = __decorate([
     (0, common_1.Controller)('order'),
-    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __metadata("design:paramtypes", [order_service_1.OrderService])
 ], OrderController);
 //# sourceMappingURL=order.controller.js.map

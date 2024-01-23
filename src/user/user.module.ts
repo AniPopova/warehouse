@@ -3,7 +3,7 @@ import { UserService } from './user.service';
 import { UserController } from './user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { UserRoleGuard } from './user-role.guard';
+import { UserRoleGuard } from '../../guards/user-role.guard';
 import { AuthService } from '../auth/auth.service';
 import { UserRepository } from './user.repository';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -17,4 +17,4 @@ import { AuthGuard } from 'src/auth/auth.guard';
 })
 
 
-export class UserModule {}
+export class UserModule { }

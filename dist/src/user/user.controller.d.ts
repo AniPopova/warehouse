@@ -6,7 +6,7 @@ export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
     findAll(): Promise<import("./entities/user.entity").User[]>;
-    getUser(param: string): Promise<import("./entities/user.entity").User | "Invalid search parameter">;
+    getUser(id: string): Promise<import("./entities/user.entity").User>;
     create(body: CreateUserDto): Promise<{
         username: string;
         password: string;

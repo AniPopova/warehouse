@@ -28,7 +28,7 @@ let OrderDetailsService = class OrderDetailsService {
             return this.orderDetailRepository.save(orderDetails);
         }
         catch (error) {
-            this.logger.error('Impossible creation', error);
+            throw this.logger.error('Impossible creation', error);
         }
     }
     async findAll() {
@@ -42,12 +42,11 @@ let OrderDetailsService = class OrderDetailsService {
         try {
             const orderDetail = await this.orderDetailRepository.findOneBy({ id });
             if (!orderDetail) {
-                throw new common_1.NotFoundException();
+                throw new common_1.NotFoundException('No records with such id.');
             }
             return orderDetail;
         }
         catch (error) {
-            this.logger.error(`Error search details by id: ${id}`, error);
             throw new common_1.BadRequestException('Error finding details by id.');
         }
     }
@@ -62,7 +61,7 @@ let OrderDetailsService = class OrderDetailsService {
             return orderDetail;
         }
         catch (error) {
-            this.logger.error('Update not executed', error);
+            throw this.logger.error('Update not executed', error);
         }
     }
     async remove(id) {
@@ -76,7 +75,7 @@ let OrderDetailsService = class OrderDetailsService {
             return `Details removed successfully`;
         }
         catch (error) {
-            this.logger.error('Error during deleting data.', error);
+            throw this.logger.error('Error during deleting data.', error);
         }
     }
     async permanentDelete(id) {
@@ -88,7 +87,7 @@ let OrderDetailsService = class OrderDetailsService {
             return await this.orderDetailRepository.remove(orderDetail);
         }
         catch (error) {
-            this.logger.error('Error during permanent delete.', error);
+            throw this.logger.error('Error during permanent delete.', error);
         }
     }
 };

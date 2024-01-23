@@ -14,11 +14,11 @@ let AuthorizationExceptionFilter = class AuthorizationExceptionFilter {
         const response = ctx.getResponse();
         const request = ctx.getRequest();
         const action = request.method;
-        let message = 'You are not authorized to perform this action.';
+        let message;
         if (action === 'POST') {
             message = 'You are not authorized to perform create.';
         }
-        else if (action === 'PUT') {
+        else if (action === 'PATCH') {
             message = 'You are not authorized to perform update.';
         }
         else if (action === 'DELETE') {

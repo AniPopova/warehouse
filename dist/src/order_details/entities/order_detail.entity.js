@@ -29,7 +29,7 @@ __decorate([
     __metadata("design:type", String)
 ], OrderDetail.prototype, "warehouseId", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ name: 'order_id', type: 'uuid', nullable: false }),
+    (0, typeorm_1.Column)({ name: 'order_id', nullable: false }),
     __metadata("design:type", String)
 ], OrderDetail.prototype, "orderId", void 0);
 __decorate([

@@ -39,4 +39,8 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Number)
 ], CreateOrderDetailDto.prototype, "price", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateOrderDetailDto.prototype, "totalPrice", void 0);
 //# sourceMappingURL=create-order_detail.dto.js.map

@@ -38,7 +38,7 @@ export class ClientService {
       }
       return client;
     } catch (error) {
-      this.logger.error(`Error during search of client.`, error);
+      throw new NotFoundException(`Error during search of client.`, error);
     }
   }
 
@@ -47,13 +47,12 @@ export class ClientService {
       const client = await this.clientRepository.findOneBy({ id });
       if (!client) {
         throw new NotFoundException(`Client with such id not found`);
-      }
-
+      } 
       Object.assign(client, attrs);
-      await this.clientRepository.save(client);
-      return client;
+      return await this.clientRepository.save(client);
+
     } catch (error) {
-      this.logger.error('Update not executed', error);
+      throw new NotFoundException('Update not executed. User does not exist or deleted', error);
     }
 
   }

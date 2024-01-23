@@ -12,7 +12,7 @@ const client_service_1 = require("./client.service");
 const client_controller_1 = require("./client.controller");
 const typeorm_1 = require("@nestjs/typeorm");
 const client_entity_1 = require("./entities/client.entity");
-const user_role_guard_1 = require("../user/user-role.guard");
+const user_role_guard_1 = require("../../guards/user-role.guard");
 let ClientModule = class ClientModule {
 };
 exports.ClientModule = ClientModule;
