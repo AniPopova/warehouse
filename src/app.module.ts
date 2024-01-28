@@ -1,6 +1,4 @@
 import { Module, NestModule, MiddlewareConsumer,  ValidationPipe} from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module'; 
@@ -10,8 +8,6 @@ import { OrderDetailsModule } from './order_details/order_details.module';
 import { InvoiceModule } from './invoice/invoice.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { dataSourceOptions } from 'db/data.source';
-import { APP_FILTER, APP_PIPE, APP_GUARD } from '@nestjs/core';
-import { AuthorizationExceptionFilter } from './exception/authorization-exception.filter';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { AuthController } from './auth/auth.controller';
@@ -33,9 +29,9 @@ import { AuthController } from './auth/auth.controller';
     InvoiceModule,
     AuthModule,
   ],
-  controllers: [AppController, AuthController],
+  controllers: [AuthController],
   providers: [
-    AppService,
+    AuthModule
   ],
 })
 

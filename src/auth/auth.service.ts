@@ -90,11 +90,6 @@ export class AuthService {
 
       return null;
     } catch (error) {
-      // Handle decoding errors, token expiration, etc.
-      if (error instanceof UnauthorizedException) {
-        throw error;
-      }
-
       throw new UnauthorizedException('Invalid token');
     }
   }

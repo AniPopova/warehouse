@@ -7,10 +7,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import dataSource, { JWT_SECRET } from 'db/data.source'; 
+import { User } from 'src/user/entities/user.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([JwtModule]),
+    TypeOrmModule.forFeature([JwtModule, User]),
     UserModule,
     JwtModule.registerAsync({
       useFactory: () => ({
@@ -25,6 +28,10 @@ import dataSource, { JWT_SECRET } from 'db/data.source';
     AuthService, 
     UserService, 
     Logger,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
   ],  
   exports: [AuthService, TypeOrmModule],  
 })

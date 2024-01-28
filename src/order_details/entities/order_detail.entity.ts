@@ -23,9 +23,12 @@ export class OrderDetail {
   @Column()
   price: number;
 
-  @Column({ name: 'total_price',  type: 'numeric' })
+  @Column({ name: 'total_price', type: 'numeric' })
   get totalPrice(): number {
     return this.quantity * this.price;
+  }
+  
+  set totalPrice(value: number) {
   }
 
   @CreateDateColumn({name: 'created_at'})

@@ -1,9 +1,9 @@
 import { SetMetadata, UseInterceptors } from '@nestjs/common';
-import { UserRights } from 'src/user/entities/user.entity';
 import { SerializeInterceptor, ClassConstructor } from 'src/interceptors/serialize.interceptor';
+import { Reflector } from '@nestjs/core';
 
 
-export const Roles = (...roles: UserRights[]) => SetMetadata('roles', roles);
+export const Roles = Reflector.createDecorator<string[]>();
 
 export const Serialize = (dto: ClassConstructor) => UseInterceptors(new SerializeInterceptor(dto));
 

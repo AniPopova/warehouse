@@ -38,7 +38,7 @@ export class ClientService {
       }
       return client;
     } catch (error) {
-      throw new NotFoundException(`Error during search of client.`, error);
+      throw new NotFoundException(`Error during searching client.`, error);
     }
   }
 

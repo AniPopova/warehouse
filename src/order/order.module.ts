@@ -7,12 +7,13 @@ import { InvoiceService } from 'src/invoice/invoice.service';
 import { OrderDetailsService } from 'src/order_details/order_details.service';
 import { Invoice } from 'src/invoice/entities/invoice.entity';
 import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
-import { UserRoleGuard } from 'guards/user-role.guard';
+import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Order, Invoice, OrderDetail])],
+  imports: [TypeOrmModule.forFeature([User, Order, Invoice, OrderDetail])],
   controllers: [OrderController],
-  providers: [OrderService, Logger, InvoiceService, OrderDetailsService, UserRoleGuard],
+  providers: [OrderService, Logger, InvoiceService, OrderDetailsService, UserService],
   exports: [TypeOrmModule]
 })
 export class OrderModule { }

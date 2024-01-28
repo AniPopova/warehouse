@@ -3,12 +3,13 @@ import { OrderDetailsService } from './order_details.service';
 import { OrderDetailsController } from './order_details.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { OrderDetail } from './entities/order_detail.entity';
-import { UserRoleGuard } from 'guards/user-role.guard';
+import { User } from 'src/user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([OrderDetail])],
+  imports: [TypeOrmModule.forFeature([OrderDetail, User])],
   controllers: [OrderDetailsController],
-  providers: [OrderDetailsService, Logger, UserRoleGuard],
+  providers: [OrderDetailsService, Logger, UserService],
   exports: [TypeOrmModule]
 })
 export class OrderDetailsModule { }
