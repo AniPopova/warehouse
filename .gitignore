@@ -1,0 +1,22 @@
+# Dependency directories
+node_modules/
+
+# Compiled TypeScript files
+dist/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+
+# Debugging files
+*.log
+npm-debug.log*
+
+# VS Code directories
+.vscode/
+
+# NestJS generated artifacts
+nestjs-*.json
+
