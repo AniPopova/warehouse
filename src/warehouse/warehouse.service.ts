@@ -1,46 +1,42 @@
-import { Injectable, Logger, NotFoundException, UseGuards } from '@nestjs/common';
+import { Injectable,  NotFoundException } from '@nestjs/common';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Warehouse } from './entities/warehouse.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
 
-@UseGuards(AuthGuard)
+
 @Injectable()
 export class WarehouseService {
-  constructor(@InjectRepository(Warehouse) private readonly warehouseRepository: Repository<Warehouse>,
-    private readonly logger: Logger) { }
+  constructor(@InjectRepository(Warehouse) private readonly warehouseRepository: Repository<Warehouse>) { }
 
   async create(createWarehouseDto: CreateWarehouseDto){
     try {
       const newWarehouse = this.warehouseRepository.create(createWarehouseDto);      
       return await this.warehouseRepository.save(newWarehouse);
     } catch (error) {
-      this.logger.error('Impossible create', error);
+      console.error('Impossible create', error);
     }
   }
   
 
-  async findAll(): Promise<Warehouse[] | null> {
-      const warehouses =  this.warehouseRepository.find();
-      if ((await warehouses).length === 0) {
+  async findAll(): Promise<Warehouse[]> {
+    try{  
+    const warehouses = await this.warehouseRepository.find();
+      if (warehouses.length === 0) {
         throw new NotFoundException('DB is empty!');
       }
       return warehouses;
-   
+    } catch(error){
+      console.error('Check the backend!', error)
+    }
   }
 
   async findOneById(id: string) {
-    try {
       const warehouse = await this.warehouseRepository.findOneBy({ id });
       if (!warehouse) {
         throw new NotFoundException(`Warehouse not found.`);
       }
       return warehouse;
-    } catch (error) {
-      this.logger.error(`Error during search: `, error);
-    }
-
   }
 
   async update(id: string, attrs: Partial<Warehouse>) {
@@ -53,7 +49,7 @@ export class WarehouseService {
       await this.warehouseRepository.save(warehouse);
       return warehouse;
     } catch (error) {
-      this.logger.error('Update not executed', error);
+      console.error('Update not executed', error);
     }
   }
 
@@ -67,7 +63,7 @@ export class WarehouseService {
       await this.warehouseRepository.save(warehouse);
       return `Warehouse successfully removed.`;
     } catch (error) {
-      this.logger.error('Error during delete.', error);
+      console.error('Error during delete.', error);
     }
   }
 
@@ -76,12 +72,12 @@ export class WarehouseService {
     try {
       const warehouse = await this.warehouseRepository.findOneBy({ id });
       if (!warehouse) {
-        throw new NotFoundException(`Warehouse with id: ${id} not found.`);
+        throw new NotFoundException(`Warehouse not found.`);
       }
       console.log(`Warehouse permanently removed.`);
       return await this.warehouseRepository.remove(warehouse);   
     } catch (error) {
-      this.logger.error('Error during permanently deleting warehouse.', error);
+      console.error('Error during permanently deleting warehouse.', error);
     }
   }
 }
