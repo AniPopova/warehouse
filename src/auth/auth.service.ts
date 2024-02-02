@@ -70,7 +70,7 @@ export class AuthService {
     });
   }
 
-  getUserRoleFromToken(token: string): string | null {
+  getUserRoleFromToken(token: string): string {
     try {
       const decodedToken: any = this.jwtService.decode(token, { complete: true });
 

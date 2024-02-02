@@ -1,8 +1,9 @@
-import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { InvoiceService } from './invoice.service';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { Roles } from 'src/decorators/access.decorator';
 import { UserRights } from 'src/user/entities/user.entity';
+import { AuthGuard } from 'src/auth/auth.guard';
 
 
 @Controller('invoice')
