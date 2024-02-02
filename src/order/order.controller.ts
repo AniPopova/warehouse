@@ -5,44 +5,48 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Roles } from 'src/decorators/access.decorator';
 import { CreateOrderDetailDto } from 'src/order_details/dto/create-order_detail.dto';
 import { CreateInvoiceDto } from 'src/invoice/dto/create-invoice.dto';
-import { UserRoleGuard } from 'src/guards/user-role.guard';
+import { UserRights } from 'src/user/entities/user.entity';
 
-@UseGuards(UserRoleGuard)
+
+
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) { }
 
   @Post()
-  @Roles(['OWNER', 'OPERATOR'])
+  @Roles(UserRights.OPERATOR, UserRights.OPERATOR)
   async create(@Body() body: { createOrderDto: CreateOrderDto, createOrderDetailDto: CreateOrderDetailDto, createInvoiceDto: CreateInvoiceDto }) {
     const { createOrderDto, createOrderDetailDto, createInvoiceDto } = body;
-    return await this.orderService.create(createOrderDto, createOrderDetailDto, createInvoiceDto);
+    await this.orderService.create(createOrderDto, createOrderDetailDto, createInvoiceDto);
+    return body;
   }
 
   @Get()
+  @Roles(UserRights.OPERATOR, UserRights.OPERATOR, UserRights.VIEWER)
   async findAll() {
     return await this.orderService.findAll();
   }
 
   @Get(':id')
+  @Roles(UserRights.OPERATOR, UserRights.OPERATOR, UserRights.VIEWER)
   async findOne(@Param('id') id: string) {
     return await this.orderService.findOneById(id);
   }
 
   @Patch(':id')
-  @Roles(['OWNER', 'OPERATOR'])
+  @Roles(UserRights.OPERATOR, UserRights.OPERATOR)
   async update(@Param('id') id: string, @Body() body: UpdateOrderDto) {
     return await this.orderService.update(id, body);
   }
 
   @Delete(':id')
-  @Roles(['OWNER', 'OPERATOR'])
+  @Roles(UserRights.OPERATOR, UserRights.OPERATOR)
   async remove(@Param('id') id: string) {
     return await this.orderService.remove(id);
   }
 
   @Delete('perm/:id')
-  @Roles(['OWNER'])
+  @Roles(UserRights.OPERATOR)
   async permanentDelete(@Param('id') id: string) {
     return await this.orderService.permanentDelete(id);
   }

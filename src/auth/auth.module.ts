@@ -28,10 +28,6 @@ import { AuthGuard } from './auth.guard';
     AuthService, 
     UserService, 
     Logger,
-    {
-      provide: APP_GUARD,
-      useClass: AuthGuard,
-    },
   ],  
   exports: [AuthService, TypeOrmModule],  
 })

@@ -1,9 +1,16 @@
-import { SetMetadata, UseInterceptors } from '@nestjs/common';
+import { ExecutionContext, SetMetadata, UseInterceptors, createParamDecorator } from '@nestjs/common';
 import { SerializeInterceptor, ClassConstructor } from 'src/interceptors/serialize.interceptor';
-import { Reflector } from '@nestjs/core';
+import { UserRights } from 'src/user/entities/user.entity';
 
 
-export const Roles = Reflector.createDecorator<string[]>();
+export const Roles = (...roles: UserRights[]) => SetMetadata('roles', roles);
+
+export const Role = createParamDecorator(
+  (data: string, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.user.role; 
+  },
+);
 
 export const Serialize = (dto: ClassConstructor) => UseInterceptors(new SerializeInterceptor(dto));
 

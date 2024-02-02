@@ -1,4 +1,4 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory} from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationError } from '@nestjs/common';
 import { ValidatorOptions } from 'class-validator';
@@ -6,13 +6,13 @@ import { ValidatorOptions } from 'class-validator';
 export interface ValidationPipeOptions extends ValidatorOptions {
   transform?: boolean;
   disableErrorMessages?: boolean;
-  exceptionFactory?: (errors: ValidationError[]) => any;
+  exceptionFactory?: (errors: ValidationError[]) => Error;
 }
 
 async function bootstrap() {
   try {
     const app = await NestFactory.create(AppModule);
-    // app.useGlobalGuards(new UserRoleGuard(app.get(Reflector)));
+    app.enableCors();
     await app.listen(3000);
     console.log(`Application is running on: http://localhost:3000`);
   } catch (error) {
