@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Invoice } from './entities/invoice.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,8 +9,7 @@ import { CreateInvoiceDto } from './dto/create-invoice.dto';
 export class InvoiceService {
   constructor(
     @InjectRepository(Invoice)
-    private readonly invoiceRepository: Repository<Invoice>,
-    private readonly logger: Logger,
+    private readonly invoiceRepository: Repository<Invoice>
   ) { }
 
   async create (createInvoiceDto: CreateInvoiceDto): Promise<Invoice> {
@@ -21,13 +20,13 @@ export class InvoiceService {
       });
       return newInvoice;
     } catch (error) {
-      this.logger.error('Impossible create', error);
+      throw error('Impossible create', error);
     }
   }
 
-  async findAll(): Promise<Invoice[] | null> {
-    const invoices =  this.invoiceRepository.find();
-    if ((await invoices).length === 0) {
+  async findAll(): Promise<Invoice[]> {
+    const invoices = await this.invoiceRepository.find();
+    if (invoices.length === 0) {
       throw new NotFoundException('DB is empty!');
     }
     return invoices;
@@ -37,24 +36,20 @@ export class InvoiceService {
     try{
       const invoice = await this.invoiceRepository.findOneBy({ id });
     if(!invoice){
-      throw new NotFoundException(`Invoice with id: ${id}, not found.`)
+      throw new NotFoundException(`Invoice not found.`)
     }
     return invoice;
     } catch (error) {
-      this.logger.error(`Error during search of invoice.`, error);
+      throw error(`Error during search of invoice.`, error);
     }
   }
 
   async findOne(orderId: string): Promise<Invoice> {
-    try{
       const invoice = await this.invoiceRepository.findOneBy({ orderId });
     if(!invoice){
       throw new NotFoundException(`Invoice not found.`)
     }
     return invoice;
-    } catch (error) {
-      this.logger.error(`Error during search of invoice.`, error);
-    }
   }
 
   async update(id: string, attrs: Partial<Invoice>) {
@@ -67,7 +62,7 @@ export class InvoiceService {
       await this.invoiceRepository.save(invoice);
       return invoice;
     } catch (error) {
-      this.logger.error('Update not executed', error);
+      throw error('Update not executed', error);
     }
   }
 
@@ -83,7 +78,7 @@ export class InvoiceService {
       return `Invoice removed successfully.`
     }
     catch (error) {
-      this.logger.error(`Error delete of invoice`, error);
+      throw error(`Error delete of invoice`, error);
     }
   }
 
@@ -96,7 +91,7 @@ export class InvoiceService {
       await this.invoiceRepository.remove(invoice);
       return `Invoice permanently removed.`;
     } catch (error) {
-      this.logger.error('Error during permanently deleting warehouse.', error);
+      throw error('Error during permanently deleting warehouse.', error);
     }
   }
 }

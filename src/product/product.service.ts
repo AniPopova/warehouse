@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,8 +6,7 @@ import { Product } from './entities/product.entity';
 
 @Injectable()
 export class ProductService {
-  constructor(@InjectRepository(Product) private productRepository: Repository<Product>,
-    private readonly logger: Logger) { }
+  constructor(@InjectRepository(Product) private productRepository: Repository<Product>) { }
 
   async create(createProductDto: CreateProductDto) {
     try {
@@ -31,24 +30,28 @@ export class ProductService {
 
       return newProduct;
     } catch (error) {
-      throw this.logger.error('Failure during creating product', error);
+      console.error('Failure during creating product', error);
     }
   }
 
-  async findAll(): Promise<Product[] | null> {
+  async findAll(): Promise<Product[]> {
+    try {
       return await this.productRepository.find();
+    } catch(error){
+      console.error('DB empty. ', error)
+    }
+      
   }
 
-  async findOneById(id: string): Promise<Product | null> {
+  async findOneById(id: string): Promise<Product> {
       const product = await this.productRepository.findOneBy({ id });
       if (!product) {
-        throw new NotFoundException(`Product with id: ${id}, not found.`)
+        throw new NotFoundException(`Product not found.`)
       }
       return product;
   }
 
-  async update(id: string, attrs: Partial<Product | null>) {
-    try {
+  async update(id: string, attrs: Partial<Product>) {
       const product = await this.productRepository.findOneBy({ id });
       if (!product) {
         throw new NotFoundException(`Product not found`);
@@ -56,22 +59,15 @@ export class ProductService {
       Object.assign(product, attrs);
       await this.productRepository.save(product);
       return product;
-    } catch (error) {
-      throw this.logger.error('Update not executed', error);
-    }
   }
 
   async remove(id: string) {
-    try {
       const product = await this.productRepository.findOneBy({ id });
       if (!product) {
         throw new NotFoundException('Product not found, try again.');
       }
       product.deletedAt = new Date();
       return await this.productRepository.save(product);
-    } catch (error) {
-      throw this.logger.error('Error during deleting product.', error);
-    }
   }
 
   async permanentDelete(id: string) {
@@ -79,11 +75,11 @@ export class ProductService {
       const product = await this.productRepository.findOneBy({ id });
       if (!product) {
         throw new NotFoundException(`Product not found.`);
-      }
-      await this.productRepository.remove(product);
-      return `Product deleted permanent.`
+      }   
+      console.log('Successfully deleted.')
+      return await this.productRepository.remove(product);
     } catch (error) {
-      throw this.logger.error('Error during permanent delete.', error);
+      console.error('Error during permanent delete.', error);
     }
   }
 }

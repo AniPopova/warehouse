@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateOrderDetailDto } from './dto/create-order_detail.dto';
 import { OrderDetail } from './entities/order_detail.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,8 +13,7 @@ import { Client } from 'src/client/entities/client.entity';
 export class OrderDetailsService {
 
   constructor(
-    @InjectRepository(OrderDetail) private readonly orderDetailRepository: Repository<OrderDetail>,
-    private readonly logger: Logger) { }
+    @InjectRepository(OrderDetail) private readonly orderDetailRepository: Repository<OrderDetail>) { }
 
   async create(createOrderDetailDto: CreateOrderDetailDto): Promise<OrderDetail> {
     try {
@@ -27,19 +26,19 @@ export class OrderDetailsService {
         quantity,});
       return orderDetails;
     } catch (error) {
-      throw this.logger.error('Impossible creation', error);
+      throw error('Impossible creation', error);
     }
   }
 
   async findAll(): Promise<OrderDetail[]> {
-    const orderDetails =  this.orderDetailRepository.find();
-      if ((await orderDetails).length === 0) {
+    const orderDetails = await this.orderDetailRepository.find();
+      if (orderDetails.length === 0) {
         throw new NotFoundException('DB is empty!');
       }
       return orderDetails;
   }
 
-  async findOneById(id: string): Promise<OrderDetail | null> {
+  async findOneById(id: string): Promise<OrderDetail> {
     try {
       const orderDetail = await this.orderDetailRepository.findOneBy({ id });
       if (!orderDetail) {
@@ -63,7 +62,7 @@ export class OrderDetailsService {
       await this.orderDetailRepository.save(orderDetail);
       return orderDetail;
     } catch (error) {
-      throw this.logger.error('Update not executed', error);
+      throw error('Update not executed', error);
     }
   }
 
@@ -77,7 +76,7 @@ export class OrderDetailsService {
       await this.orderDetailRepository.save(od);
       return `Details removed successfully`;
     } catch (error) {
-      throw this.logger.error('Error during deleting data.', error);
+      throw error('Error during deleting data.', error);
     }
   }
 
@@ -89,17 +88,18 @@ export class OrderDetailsService {
       }
       return await this.orderDetailRepository.remove(orderDetail);
     } catch (error) {
-      throw this.logger.error('Error during permanent delete.', error);
+      throw error('Error during permanent delete.', error);
     }
   }
 
   // REPORTING
-  async bestSeller() {
+  async bestProduct() {
     const query = await this.orderDetailRepository
       .createQueryBuilder('orderDetail')
       .select([
-        'SUM(orderDetail.quantity) AS best_selling',
+        'SUM(orderDetail.quantity) AS most_wanted_product',
         'product.name AS product_name',
+        'product.unit AS unit',
       ])
       .innerJoin(Order, 'order', 'orderDetail.order_id = order.id')
       .innerJoin(Product, 'product', 'orderDetail.product_id = product.id')
@@ -107,13 +107,13 @@ export class OrderDetailsService {
       .andWhere('order.deleted_at IS NULL')
       .groupBy('product.name')
       .addGroupBy('orderDetail.quantity')
-      .orderBy('best_selling', 'DESC')
+      .orderBy('most_wanted_product', 'DESC')
       .getRawMany();
 
     return query;
   }
 
-  async highestStockPerWarehouse() {
+  async highestStockPerWarehouse(): Promise<any[]> {
     const query = await this.orderDetailRepository
       .createQueryBuilder('orderDetail')
       .select([
@@ -124,7 +124,7 @@ export class OrderDetailsService {
       .innerJoin(Order, 'o', 'orderDetail.order_id = o.id')
       .innerJoin(Product, 'product', 'orderDetail.product_id = product.id')
       .innerJoin(Warehouse, 'warehouse', 'orderDetail.warehouse_id = warehouse.id')
-      .where('o.type = :type', { type: 'DELIVERY' })
+      .where('o.type IN (:...types)', { types: ['DELIVERY', 'TRANSFER'] })
       .andWhere('o.deleted_at IS NULL')
       .groupBy('product.name')
       .addGroupBy('warehouse.name')
@@ -135,20 +135,22 @@ export class OrderDetailsService {
   }
   
   
-  async bestClientMostOrders() {
+  async bestClient() {
     const query = await this.orderDetailRepository
       .createQueryBuilder('orderDetail')
       .select([
-        'COUNT(orderDetail.id) AS order_count',
+        'COUNT(orderDetail.id) AS orders',
+        'SUM(orderDetail.price) AS total_money_spent',
         'client.name AS client_name',
       ])
       .innerJoin(Order, 'order', 'orderDetail.order_id = order.id')
       .innerJoin(Client, 'client', 'order.client_id = client.id')
       .where('order.deleted_at IS NULL')
       .groupBy('client.name')
-      .orderBy('order_count', 'DESC')
+      .orderBy('orders', 'DESC')
       .getRawMany();
   
     return query;
   }
+  
 }

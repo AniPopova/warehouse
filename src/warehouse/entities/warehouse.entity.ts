@@ -30,7 +30,7 @@ export class Warehouse {
   @DeleteDateColumn({name: 'deleted_at', nullable: true})
   deletedAt: Date;
 
-  @ManyToOne(() => Client)
+  
   @JoinColumn({ name: 'client_id' })
-  client: Client;
+  client: Client | Warehouse;
 }

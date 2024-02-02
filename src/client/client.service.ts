@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateClientDto } from './dto/create-client.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -8,21 +8,18 @@ import { Client } from './entities/client.entity';
 @Injectable()
 export class ClientService {
 
-  constructor(
-    @InjectRepository(Client)
-    private readonly clientRepository: Repository<Client>,
-    private readonly logger: Logger) { }
+  constructor(@InjectRepository(Client) private readonly clientRepository: Repository<Client>) { }
 
   async create(createClientDto: CreateClientDto) {
     try {
       const newClient = this.clientRepository.create(createClientDto);
       return await this.clientRepository.save(newClient);
     } catch (error) {
-      this.logger.error('Impossible create', error);
+      throw error('Impossible create', error);
     }
   }
 
-  async findAll(): Promise<Client[] | null> {
+  async findAll(): Promise<Client[]> {
     const clients = await this.clientRepository.find();
     if (clients.length === 0) {
       throw new NotFoundException('DB is empty!');
@@ -30,20 +27,15 @@ export class ClientService {
     return clients;
   }
 
-  async findOneById(id: string): Promise<Client | null> {
-    try {
+  async findOneById(id: string): Promise<Client> {
       const client = await this.clientRepository.findOneBy({id});
       if (!client) {
         throw new NotFoundException(`Client with such id, not found.`)
       }
       return client;
-    } catch (error) {
-      throw new NotFoundException(`Error during searching client.`, error);
-    }
   }
 
   async update(id: string, attrs: Partial<Client>) {
-    try {
       const client = await this.clientRepository.findOneBy({ id });
       if (!client) {
         throw new NotFoundException(`Client with such id not found`);
@@ -51,14 +43,9 @@ export class ClientService {
       Object.assign(client, attrs);
       return await this.clientRepository.save(client);
 
-    } catch (error) {
-      throw new NotFoundException('Update not executed. User does not exist or deleted', error);
-    }
-
   }
 
   async softDelete(id: string) {
-    try {
       const client = await this.clientRepository.findOneBy({ id });
       if (!client) {
         throw new NotFoundException('Client not found.');
@@ -66,9 +53,6 @@ export class ClientService {
       client.deletedAt = new Date();
       await this.clientRepository.save(client);
       return `Client removed successfully`;
-    } catch (error) {
-      this.logger.error('Error during deleting client.', error);
-    }
   }
 
   async permanentDelete(id: string) {
@@ -79,7 +63,7 @@ export class ClientService {
       }
       return await this.clientRepository.remove(client);
     } catch (error) {
-      this.logger.error('Error during permanent delete.', error);
+      throw error('Error during permanent delete.', error);
     }
   }
 }

@@ -9,16 +9,16 @@ import { UserRights } from 'src/user/entities/user.entity';
 export class OrderDetailsController {
   constructor(private readonly orderDetailsService: OrderDetailsService) { }
 
-  @Get('/best')
+  @Get('/best-product')
   @Roles(UserRights.OPERATOR, UserRights.OPERATOR, UserRights.VIEWER)
   async findByBestSoldProduct(){
-    return await this.orderDetailsService.bestSeller();
+    return await this.orderDetailsService.bestProduct();
   }
 
   @Get('/best-client')
   @Roles(UserRights.OPERATOR, UserRights.OPERATOR, UserRights.VIEWER)
   async findByBestClient(){
-    return await this.orderDetailsService.bestClientMostOrders();
+    return await this.orderDetailsService.bestClient();
   }
   @Get('/stock')
   @Roles(UserRights.OPERATOR, UserRights.OPERATOR, UserRights.VIEWER)
@@ -55,5 +55,7 @@ export class OrderDetailsController {
   async permRemove(@Param('id') id: string) {
     return await this.orderDetailsService.permanentDelete(id);
   }
+
+
 }
 

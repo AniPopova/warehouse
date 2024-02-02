@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, InternalServerErrorException, Logger, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserRights, User } from 'src/user/entities/user.entity';
@@ -10,8 +10,7 @@ import { DeepPartial } from 'typeorm';
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly userService: UserService,
-    private readonly logger: Logger,
+    private readonly userService: UserService
   ) { }
 
   async signup(createUserDto: CreateUserDto) {
@@ -61,7 +60,7 @@ export class AuthService {
         throw new UnauthorizedException('You are not authorized to execute this action!');
       }
     } catch (error) {
-      throw this.logger.error('Error during user sign-in', error);
+      throw error('Error during user sign-in', error);
     }
   }
 

@@ -83,8 +83,7 @@ export class UserService {
       throw new NotFoundException(`User not found!`);
     }
     user.deletedAt = new Date();
-    await this.userRepository.save(user);
-    return `User removed successfully.`
+    return await this.userRepository.save(user);
   }
 
   async permanentDelete(id: string) {
