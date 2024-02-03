@@ -7,6 +7,7 @@ import { User } from 'src/user/entities/user.entity';
 import { UserService } from 'src/user/user.service';
 import { JWT_SECRET } from 'db/data.source';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from 'src/auth/auth.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Invoice, User]),
@@ -18,7 +19,7 @@ import { JwtModule } from '@nestjs/jwt';
     }),
   }),],
   controllers: [InvoiceController],
-  providers: [UserService, InvoiceService],
+  providers: [UserService, InvoiceService, AuthService],
   exports: [TypeOrmModule]
 })
 export class InvoiceModule {}

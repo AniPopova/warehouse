@@ -1,6 +1,8 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, UpdateDateColumn, CreateDateColumn, DeleteDateColumn, EventSubscriber, EntitySubscriberInterface, InsertEvent } from 'typeorm';
 import { Client } from 'src/client/entities/client.entity';
 import { Invoice } from 'src/invoice/entities/invoice.entity';
+import { OrderDetail } from 'src/order_details/entities/order_detail.entity';
+import { Warehouse } from 'src/warehouse/entities/warehouse.entity';
 
 export enum OrderType {
   TRANSFER = 'TRANSFER',
@@ -20,8 +22,11 @@ export class Order {
   })
   type: OrderType;
 
-  @Column({ name: 'client_id', type: 'uuid', nullable: false })
+  @Column({ name: 'client_id', type: 'uuid'})
   clientId: string;
+
+  @Column({ name: 'client_id', type: 'uuid'})
+  warehouseId: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
@@ -35,23 +40,9 @@ export class Order {
   @ManyToOne(() => Client)
   @JoinColumn({ name: 'client_id' })
   client: Client;
+
+  @ManyToOne(() => Warehouse)
+  @JoinColumn({ name: 'warehouse_id' })
+  warehouse: Warehouse;
 }
 
-@EventSubscriber()
-export class OrderSubscriber implements EntitySubscriberInterface<Order> {
-
-  listenTo() {
-    return Order;
-  }
-
-  async afterInsert(event: InsertEvent<Order>) {
-    const order = event.entity;
-    const orderDetail = event.entity;
-    if (order.type === OrderType.ORDER) {
-      const invoice = new Invoice();
-      invoice.orderId = order.id;
-      Invoice.save(invoice);
-    }
-  }
-
-}

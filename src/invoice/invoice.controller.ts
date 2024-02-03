@@ -2,40 +2,38 @@ import { Controller, Get, Body, Patch, Param, Delete, UseGuards } from '@nestjs/
 import { InvoiceService } from './invoice.service';
 import { UpdateInvoiceDto } from './dto/update-invoice.dto';
 import { Roles } from 'src/decorators/access.decorator';
-import { UserRights } from 'src/user/entities/user.entity';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { RolesGuard } from 'src/guards/role.guard';
 
 
 @Controller('invoice')
+@UseGuards(RolesGuard)
 export class InvoiceController {
   constructor(private invoiceService: InvoiceService) { }
 
   @Get()
-  @Roles(UserRights.OPERATOR, UserRights.OPERATOR, UserRights.VIEWER)
   async findAll() {
     return await this.invoiceService.findAll();
   }
 
   @Get(':id')
-  @Roles(UserRights.OPERATOR, UserRights.OPERATOR, UserRights.VIEWER)
   async findOne(@Param('id') id: string) {
     return await this.invoiceService.findOneBy(id);
   }
 
   @Patch(':id')
-  @Roles(UserRights.OPERATOR, UserRights.OPERATOR)
+  @Roles('OPERATOR')
   async update(@Param('id') id: string, @Body() updateInvoiceDto: UpdateInvoiceDto) {
     return await this.invoiceService.update(id, updateInvoiceDto);
   }
 
   @Delete(':id')
-  @Roles(UserRights.OPERATOR, UserRights.OPERATOR)
+  @Roles('OPERATOR')
   async remove(@Param('id') id: string) {
     return await this.invoiceService.remove(id);
   }
 
   @Delete('perm/:id')
-  @Roles(UserRights.OPERATOR)
+  @Roles('OWNER')
   async permDelete(@Param('id') id: string) {
     return await this.invoiceService.permanentDelete(id)
   }

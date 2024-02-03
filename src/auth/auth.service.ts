@@ -64,10 +64,29 @@ export class AuthService {
     }
   }
 
-  validateToken(token: string) {
+  // validateToken(token: string) {
+  //   try {
+  //     const decoded = this.jwtService.verify(token, {
+  //       secret: process.env.JWT_SECRET,
+  //     });
+  // console.log('Decoded user', decoded);
+  
+  //     return decoded; 
+  //   } catch (error) {
+
+  //     throw new UnauthorizedException('Invalid token');
+  //   }
+  // }
+
+  async validateToken(token: string) {
     return this.jwtService.verify(token, {
       secret: process.env.JWT_SECRET,
     });
+  }
+
+  getUserRole(context: any): string | null {
+    const request = context.switchToHttp().getRequest();
+    return request.user?.role || null;
   }
 
   getUserRoleFromToken(token: string): string {

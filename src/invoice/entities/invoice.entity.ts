@@ -3,9 +3,7 @@ import { Order } from 'src/order/entities/order.entity'
 
 @Entity('invoice')
 export class Invoice {
-  static save(invoice: Invoice) {
-    throw new Error('Method not implemented.');
-  }
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

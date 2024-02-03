@@ -1,5 +1,114 @@
+// import {
+//   CanActivate, ExecutionContext, Injectable, UnauthorizedException,
+//   ForbiddenException,
+// } from '@nestjs/common';
+// import { AuthGuard as BaseAuthGuard } from '@nestjs/passport';
+// import { AuthService } from './auth.service';
+// import { IS_PUBLIC_KEY } from 'src/decorators/access.decorator';
+// import { Reflector } from '@nestjs/core';
+// import * as bcrypt from 'bcrypt';
+// import { JwtService } from '@nestjs/jwt';
+// import { Request } from 'express';
+
+// @Injectable()
+// export class AuthGuard extends BaseAuthGuard('jwt') implements CanActivate {
+//   constructor(private readonly authService: AuthService, 
+//     private readonly reflector: Reflector,
+//     private readonly jwtService: JwtService) {
+//     super();
+//   }
+//   async canActivate(context: ExecutionContext): Promise<boolean>  {
+//     try {
+//       const isPublic = this.reflector.get<boolean>(
+//         IS_PUBLIC_KEY,
+//         context.getHandler(),
+//       );
+
+//       if (isPublic) {
+//         return true;
+//       }
+
+//       const request = context.switchToHttp().getRequest();
+//       const { authorization }: any = request.headers;
+
+//       if (!authorization || authorization.trim() === '') {
+//         throw new UnauthorizedException('Please provide token');
+//       }
+
+//       const authToken = authorization.replace(/bearer/gim, '').trim();
+//       const resp = await this.authService.validateToken(authToken);    
+
+//       request.decodedData = resp;
+//       request.user = resp; 
+//       return true;
+//     } catch (error) {
+//       console.log('auth error - ', error.message);
+//       throw new ForbiddenException(error.message || 'Session expired! Please sign in');
+//     }
+//   }
+
+// import {
+//   CanActivate,
+//   ExecutionContext,
+//   Injectable,
+//   UnauthorizedException,
+//   ForbiddenException,
+// } from '@nestjs/common';
+// import { AuthGuard as BaseAuthGuard } from '@nestjs/passport';
+// import { AuthService } from './auth.service';
+// import { IS_PUBLIC_KEY } from 'src/decorators/access.decorator';
+// import { Reflector } from '@nestjs/core';
+// import * as bcrypt from 'bcrypt';
+// import { JwtService } from '@nestjs/jwt';
+// import { Request } from 'express';
+
+// @Injectable()
+// export class AuthGuard extends BaseAuthGuard('jwt') implements CanActivate {
+//   constructor(
+//     private readonly authService: AuthService,
+//     private readonly reflector: Reflector,
+//     private readonly jwtService: JwtService,
+//   ) {
+//     super();
+//   }
+
+//   async canActivate(context: ExecutionContext): Promise<boolean> {
+//     try {
+//       const isPublic = this.reflector.get<boolean>(
+//         IS_PUBLIC_KEY,
+//         context.getHandler(),
+//       );
+
+//       if (isPublic) {
+//         return true;
+//       }
+
+//       const request = context.switchToHttp().getRequest();
+//       const { authorization }: any = request.headers;
+
+//       if (!authorization || authorization.trim() === '') {
+//         throw new UnauthorizedException('Please provide token');
+//       }
+
+//       const authToken = authorization.replace(/bearer/gim, '').trim();
+//       const decodedUser = await this.authService.validateToken(authToken);
+
+//       request.user = decodedUser;
+//       return true;
+//     } catch (error) {
+//       console.log('auth error - ', error.message);
+//       throw new ForbiddenException(
+//         error.message || 'Session expired! Please sign in',
+//       );
+//     }
+//   }
+
+
 import {
-  CanActivate, ExecutionContext, Injectable, UnauthorizedException,
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
   ForbiddenException,
 } from '@nestjs/common';
 import { AuthGuard as BaseAuthGuard } from '@nestjs/passport';
@@ -12,11 +121,14 @@ import { Request } from 'express';
 
 @Injectable()
 export class AuthGuard extends BaseAuthGuard('jwt') implements CanActivate {
-  constructor(private readonly authService: AuthService, 
+  constructor(
+    private readonly authService: AuthService,
     private readonly reflector: Reflector,
-    private readonly jwtService: JwtService) {
+    private readonly jwtService: JwtService,
+  ) {
     super();
   }
+
   async canActivate(context: ExecutionContext): Promise<boolean> {
     try {
       const isPublic = this.reflector.get<boolean>(
@@ -36,13 +148,15 @@ export class AuthGuard extends BaseAuthGuard('jwt') implements CanActivate {
       }
 
       const authToken = authorization.replace(/bearer/gim, '').trim();
-      const resp = await this.authService.validateToken(authToken);    
+      const resp = await this.authService.validateToken(authToken);
 
-      request.decodedData = resp;
+      request.user = resp; // Set the user object including 'role'
       return true;
     } catch (error) {
       console.log('auth error - ', error.message);
-      throw new ForbiddenException(error.message || 'Session expired! Please sign in');
+      throw new ForbiddenException(
+        error.message || 'Session expired! Please sign in',
+      );
     }
   }
 
