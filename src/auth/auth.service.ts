@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import { UserRights, User } from 'src/user/entities/user.entity';
@@ -15,7 +15,17 @@ export class AuthService {
 
   async signup(createUserDto: CreateUserDto) {
     try {
-      const existingUser = await this.userService.findOneByEmail(createUserDto.email);
+      let existingUser: User | null;
+
+      try {
+        existingUser = await this.userService.findOneByEmail(createUserDto.email);
+      } catch (error) {
+        if (error instanceof NotFoundException) {
+          existingUser = null;
+        } else {
+          throw error;
+        }
+      }
 
       if (existingUser) {
         throw new ConflictException('Email already exists');
@@ -103,6 +113,20 @@ export class AuthService {
       return null;
     } catch (error) {
       throw new UnauthorizedException('Invalid token');
+    }
+  }
+
+  async validateUser(email: string, password: string): Promise<User | null> {
+    try {
+      const user = await this.userService.findOneByEmail(email);
+
+      if (user && (user as User).password === password) {
+        return user as User;
+      }
+      
+      return user;
+    } catch (error) {
+      throw new BadRequestException(error);
     }
   }
 }

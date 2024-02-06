@@ -19,13 +19,11 @@ export class AuthController {
   @Post('/signup')
   async signup(@Body() createUserDto: CreateUserDto) {
     try {
-      await this.authService.signup(createUserDto);
+      await this.authService.signup(createUserDto);     
       return { message: 'Signup successful' };
     } catch (error) {
-      if (error instanceof BadRequestException) {
-        throw new BadRequestException(error.message);
-      }
       throw new BadRequestException('Signup failed');
     }
   }
+
 }

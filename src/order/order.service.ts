@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, InternalServerErrorException, NotFound
 import { CreateOrderDto } from './dto/create-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Order, OrderType } from './entities/order.entity';
+import { Order } from './entities/order.entity';
 import { InvoiceService } from 'src/invoice/invoice.service';
 import { CreateOrderDetailDto } from 'src/order_details/dto/create-order_detail.dto';
 import { OrderDetailsService } from 'src/order_details/order_details.service';
