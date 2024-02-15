@@ -1,13 +1,11 @@
-import { UserRights } from 'src/user/entities/user.entity';
-import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
-
-export class UserTable1639171900000 implements MigrationInterface {
+export class WarehouseTable1639181000001 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
 
     await queryRunner.createTable(
       new Table({
-        name: 'user',
+        name: 'warehouse',
         columns: [
           {
             name: 'id',
@@ -16,25 +14,18 @@ export class UserTable1639171900000 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'username',
+            name: 'name',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'password',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'user_role',
+            name: 'type',
             type: 'enum',
-            enum: Object.values(UserRights),
-            default: `'${UserRights.VIEWER}'`,
-            isNullable: false,
+            enum: ['LIQUID', 'NON_LIQUID'],
           },
           {
-            name: 'email',
-            type: 'varchar',
+            name: 'client_id',
+            type: 'uuid',
             isNullable: false,
           },
           {
@@ -57,19 +48,10 @@ export class UserTable1639171900000 implements MigrationInterface {
       }),
       true,
     );
-
-    await queryRunner.createIndex(
-      'user',
-      new TableIndex({
-        name: 'IDX_USER_EMAIL', 
-        columnNames: ['email'],
-        isUnique: true,
-      }),
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('user');
-    await queryRunner.dropIndex('user', 'IDX_USER_EMAIL');
+    await queryRunner.dropTable('warehouse');
+    await queryRunner.dropForeignKey('warehouse', 'FK_WAREHOUSE_CLIENT');
   }
 }

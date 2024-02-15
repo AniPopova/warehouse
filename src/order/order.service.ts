@@ -27,47 +27,51 @@ export class OrderService {
   ) { }
   async create(createOrderDto: CreateOrderDto, createOrderDetailDto: CreateOrderDetailDto) {
     try {
-      const client = await this.clientService.findOneById(createOrderDto.clientId);
-      const warehouse = await this.warehouseService.findOneById(createOrderDto.warehouseId);
+      const client = createOrderDto.clientId ? await this.clientService.findOneById(createOrderDto.clientId) : null;
+      const warehouse = createOrderDto.warehouseId ? await this.warehouseService.findOneById(createOrderDto.warehouseId) : null;
       const product = await this.productService.findOneById(createOrderDetailDto.productId);
-      let newInvoice: Invoice;
-      if (!client && !warehouse) {
-        throw new BadRequestException('Invalid data, check again the client or warehouse info you provided!');
-      }
 
-      const { type } = createOrderDto;
-      const newOrderType = createOrderDto.type;
+      const { type, clientId, warehouseId } = createOrderDto;
 
       const newOrder = await this.orderRepository.save({
         type,
         clientId: client ? client.id : null,
-        warehouseId: warehouse ? warehouse.id : null,
+        warehouseId: warehouse ? warehouse.id : null
       });
 
       const orderId = newOrder.id;
 
-      if (newOrderType === 'ORDER') {
+      let newInvoice: Invoice | undefined;
+      if (type === 'ORDER') {
         newInvoice = await this.invoiceService.create({
           orderId,
         });
       }
 
       if (!product) {
-        throw new BadRequestException('Choose an existing product. Invalid data.');
+        throw new BadRequestException('Invalid product information provided');
       }
 
-      const { warehouseId, productId, quantity, price } = createOrderDetailDto;
+      const { senderWarehouseId, productId, quantity, price } = createOrderDetailDto;
       const totalPrice = quantity * price;
 
+      let receiverWarehouseId = null;
+      if (newInvoice) {
+        receiverWarehouseId = null;
+      } else {
+        receiverWarehouseId = warehouse.id;
+      }
+      
       const newOrderDetail = await this.orderDetailRepository.save({
-        warehouseId: warehouse.id,
+        senderWarehouseId: warehouse.id,
+        receiverWarehouseId,
         orderId: newOrder.id,
         productId: product.id,
         quantity,
         price,
         totalPrice,
       });
-
+      
 
       return { newOrder, newInvoice, newOrderDetail };
     } catch (error) {
@@ -75,8 +79,6 @@ export class OrderService {
       throw new InternalServerErrorException('Error creating order');
     }
   }
-
-
 
   async findAll(): Promise<Order[]> {
     const orders = await this.orderRepository.find();

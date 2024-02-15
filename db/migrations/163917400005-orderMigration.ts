@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
-export class OrderTable1639174000000 implements MigrationInterface {
+export class OrderTable1639174000005 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
 
     await queryRunner.createTable(
@@ -20,11 +20,13 @@ export class OrderTable1639174000000 implements MigrationInterface {
           },
           {
             name: 'client_id',
-            type: 'uuid',
+            type: 'varchar',
+            isNullable: true,
           },
           {
             name: 'warehouse_id',
             type: 'uuid',
+            isNullable: true,
           },
           {
             name: 'created_at',
@@ -45,25 +47,6 @@ export class OrderTable1639174000000 implements MigrationInterface {
         ],
       }),
       true,
-    );
-
-
-    await queryRunner.createForeignKey(
-      'order',
-      new TableForeignKey({
-        columnNames: ['client_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'client',
-      }),
-    );
-
-    await queryRunner.createForeignKey(
-      'order',
-      new TableForeignKey({
-        columnNames: ['warehouse_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'warehouse',
-      }),
     );
   }
 

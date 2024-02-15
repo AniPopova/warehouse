@@ -2,7 +2,7 @@ import { UserRights } from 'src/user/entities/user.entity';
 import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
 
 
-export class UserTable1639171900000 implements MigrationInterface {
+export class UserTable1639171900001 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
 
     await queryRunner.createTable(
@@ -56,15 +56,6 @@ export class UserTable1639171900000 implements MigrationInterface {
         ],
       }),
       true,
-    );
-
-    await queryRunner.createIndex(
-      'user',
-      new TableIndex({
-        name: 'IDX_USER_EMAIL', 
-        columnNames: ['email'],
-        isUnique: true,
-      }),
     );
   }
 

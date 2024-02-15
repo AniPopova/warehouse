@@ -1,13 +1,11 @@
-import { UserRights } from 'src/user/entities/user.entity';
-import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-
-export class UserTable1639171900000 implements MigrationInterface {
+export class ProductTable1639180000001 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
 
     await queryRunner.createTable(
       new Table({
-        name: 'user',
+        name: 'product',
         columns: [
           {
             name: 'id',
@@ -16,25 +14,20 @@ export class UserTable1639171900000 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'username',
+            name: 'name',
             type: 'varchar',
             isNullable: false,
           },
           {
-            name: 'password',
-            type: 'varchar',
-            isNullable: false,
-          },
-          {
-            name: 'user_role',
+            name: 'type',
             type: 'enum',
-            enum: Object.values(UserRights),
-            default: `'${UserRights.VIEWER}'`,
+            enum: ['LIQUID', 'NON_LIQUID'],
             isNullable: false,
           },
           {
-            name: 'email',
-            type: 'varchar',
+            name: 'unit',
+            type: 'enum',
+            enum: ['kg', 'l'],
             isNullable: false,
           },
           {
@@ -57,19 +50,9 @@ export class UserTable1639171900000 implements MigrationInterface {
       }),
       true,
     );
-
-    await queryRunner.createIndex(
-      'user',
-      new TableIndex({
-        name: 'IDX_USER_EMAIL', 
-        columnNames: ['email'],
-        isUnique: true,
-      }),
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('user');
-    await queryRunner.dropIndex('user', 'IDX_USER_EMAIL');
+    await queryRunner.dropTable('product');
   }
 }

@@ -1,11 +1,10 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
-export class OrderTable1639174000000 implements MigrationInterface {
+export class InvoiceTable1639173000001 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-
     await queryRunner.createTable(
       new Table({
-        name: 'order',
+        name: 'invoice',
         columns: [
           {
             name: 'id',
@@ -14,17 +13,16 @@ export class OrderTable1639174000000 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'type',
-            type: 'enum',
-            enum: ['TRANSFER', 'ORDER', 'DELIVERY'],
+            name: 'inv_number',
+            type: 'integer',
+            isGenerated: true,
+            generationStrategy: 'increment',
+            isNullable: false,
           },
           {
-            name: 'client_id',
+            name: 'order_id',
             type: 'uuid',
-          },
-          {
-            name: 'warehouse_id',
-            type: 'uuid',
+            isNullable: false,
           },
           {
             name: 'created_at',
@@ -46,31 +44,10 @@ export class OrderTable1639174000000 implements MigrationInterface {
       }),
       true,
     );
-
-
-    await queryRunner.createForeignKey(
-      'order',
-      new TableForeignKey({
-        columnNames: ['client_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'client',
-      }),
-    );
-
-    await queryRunner.createForeignKey(
-      'order',
-      new TableForeignKey({
-        columnNames: ['warehouse_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'warehouse',
-      }),
-    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('order');
-
-    await queryRunner.dropForeignKey('order', 'FK_ORDER_CLIENT');
-    await queryRunner.dropForeignKey('order', 'FK_ORDER_WAREHOUSE');
+    await queryRunner.dropTable('invoice');
+    await queryRunner.dropForeignKey('invoice', 'FK_INVOICE_ORDER');
   }
 }

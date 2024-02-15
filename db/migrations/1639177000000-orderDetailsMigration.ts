@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
-export class OrderDetailsTable1639176000000 implements MigrationInterface {
+export class OrderDetailsTable1639177000000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
 
     await queryRunner.createTable(
@@ -14,9 +14,14 @@ export class OrderDetailsTable1639176000000 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'warehouse_id',
+            name: 'sender_warehouse_id',
             type: 'uuid',
-            isNullable: false,
+            isNullable: true,
+          },
+          {
+            name: 'receiver_warehouse_id',
+            type: 'uuid',
+            isNullable: true,
           },
           {
             name: 'order_id',
@@ -63,14 +68,21 @@ export class OrderDetailsTable1639176000000 implements MigrationInterface {
       true,
     );
 
-    
     await queryRunner.createForeignKey(
       'order_details',
       new TableForeignKey({
-        columnNames: ['warehouse_id'],
+        columnNames: ['sender_warehouse_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'warehouse',
-        onDelete: 'CASCADE',
+      }),
+    );
+
+    await queryRunner.createForeignKey(
+      'order_details',
+      new TableForeignKey({
+        columnNames: ['receiver_warehouse_id'],
+        referencedColumnNames: ['id'],
+        referencedTableName: 'warehouse',
       }),
     );
 
@@ -80,7 +92,6 @@ export class OrderDetailsTable1639176000000 implements MigrationInterface {
         columnNames: ['order_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'order',
-        onDelete: 'CASCADE',
       }),
     );
 
@@ -90,7 +101,6 @@ export class OrderDetailsTable1639176000000 implements MigrationInterface {
         columnNames: ['product_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'product',
-        onDelete: 'CASCADE',
       }),
     );
   }

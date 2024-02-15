@@ -1,6 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, UpdateDateColumn, CreateDateColumn, DeleteDateColumn, EventSubscriber } from 'typeorm';
-import { Client } from 'src/client/entities/client.entity';
-import { Warehouse } from 'src/warehouse/entities/warehouse.entity';
+import { Entity, Column, PrimaryGeneratedColumn, UpdateDateColumn, CreateDateColumn, DeleteDateColumn, EventSubscriber } from 'typeorm';
 
 export enum OrderType {
   TRANSFER = 'TRANSFER',
@@ -20,10 +18,10 @@ export class Order {
   })
   type: OrderType;
 
-  @Column({ name: 'client_id', type: 'uuid'})
+  @Column({ name: 'client_id', type: 'uuid', nullable: true })
   clientId: string;
 
-  @Column({ name: 'warehouse_id', type: 'uuid'})
+  @Column({ name: 'warehouse_id', type: 'uuid', nullable: true })
   warehouseId: string;
 
   @CreateDateColumn({ name: 'created_at' })
@@ -35,10 +33,5 @@ export class Order {
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt: Date;
 
-  @JoinColumn({ name: 'client_id' })
-  client: Client;
-
-  @JoinColumn({ name: 'warehouse_id' })
-  warehouse: Warehouse;
 }
 
