@@ -15,22 +15,27 @@ export class OrderDetailsService {
   constructor(
     @InjectRepository(OrderDetail) private readonly orderDetailRepository: Repository<OrderDetail>) { }
 
-  async create(createOrderDetailDto: CreateOrderDetailDto): Promise<OrderDetail> {
-    try {
-      const { warehouseId, orderId, productId, price, quantity } = createOrderDetailDto;
-      const totalPrice = price * quantity;
-      const orderDetails = await this.orderDetailRepository.save({
-        warehouseId,
-        orderId,
-        productId,
-        price,
-        quantity,
-        totalPrice});
-      return orderDetails;
-    } catch (error) {
-      throw new BadRequestException('Impossible creation', error);
+    async create(createOrderDetailDto: CreateOrderDetailDto): Promise<OrderDetail> {
+      try {
+        const { senderWarehouseId, receiverWarehouseId, orderId, productId, price, quantity } = createOrderDetailDto;
+        const totalPrice = price * quantity;
+  
+        const orderDetail = this.orderDetailRepository.create({
+          senderWarehouseId,
+          receiverWarehouseId,
+          orderId,
+          productId,
+          price,
+          quantity,
+          totalPrice
+        });
+  
+        const savedOrderDetail = await this.orderDetailRepository.save(orderDetail);
+        return savedOrderDetail;
+      } catch (error) {
+        throw new BadRequestException('Failed to create order detail', error);
+      }
     }
-  }
 
   async findAll(): Promise<OrderDetail[]> {
     const orderDetails = await this.orderDetailRepository.find();
@@ -101,19 +106,19 @@ export class OrderDetailsService {
     const query = await this.orderDetailRepository
       .createQueryBuilder('orderDetail')
       .select([
-        'SUM(orderDetail.quantity) AS most_wanted_product',
-        'product.name AS product_name',
+        'SUM(orderDetail.quantity) AS sold_quantity',
         'product.unit AS unit',
+        'product.name AS product_name',
+  
       ])
       .innerJoin(Order, 'order', 'orderDetail.order_id = order.id')
       .innerJoin(Product, 'product', 'orderDetail.product_id = product.id')
       .where('order.type = :type', { type: 'ORDER' })
       .andWhere('order.deleted_at IS NULL')
-      .groupBy('product.name')
-      .addGroupBy('orderDetail.quantity')
-      .orderBy('most_wanted_product', 'DESC')
+      .groupBy('product.name, product.unit') 
+      .orderBy('sold_quantity', 'DESC')
       .getRawMany();
-
+  
     return query;
   }
 
@@ -127,7 +132,7 @@ export class OrderDetailsService {
       ])
       .innerJoin(Order, 'o', 'orderDetail.order_id = o.id')
       .innerJoin(Product, 'product', 'orderDetail.product_id = product.id')
-      .innerJoin(Warehouse, 'warehouse', 'orderDetail.warehouse_id = warehouse.id')
+      .innerJoin(Warehouse, 'warehouse', 'orderDetail.senderWarehouseId = warehouse.id')
       .where('o.type IN (:...types)', { types: ['DELIVERY', 'TRANSFER'] })
       .andWhere('o.deleted_at IS NULL')
       .groupBy('product.name')

@@ -38,7 +38,6 @@ export class ClientController {
   }
 
   @Delete('perm/:id')
-  @Roles('OWNER')
   async permRemove(@Param('id') id: string) {
     return await this.clientService.permanentDelete(id);
   }

@@ -3,7 +3,10 @@ import { IsUUID, IsNotEmpty, IsNumber } from 'class-validator';
 export class CreateOrderDetailDto {
   @IsUUID()
   @IsNotEmpty()
-  warehouseId: string;
+  senderWarehouseId: string;
+
+  @IsUUID()
+  receiverWarehouseId: string;
 
   @IsUUID()
   @IsNotEmpty()
@@ -22,6 +25,6 @@ export class CreateOrderDetailDto {
   price: number;
 
   @IsNumber()
+  @IsNotEmpty()
   totalPrice: number;
-
 }

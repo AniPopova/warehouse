@@ -52,7 +52,6 @@ export class InvoiceTable1639173000000 implements MigrationInterface {
         columnNames: ['order_id'],
         referencedColumnNames: ["id"],
         referencedTableName: "order",
-        onDelete: 'CASCADE',
       }),
     );
   }

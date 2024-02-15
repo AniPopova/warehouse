@@ -56,7 +56,6 @@ export class WarehouseTable1639181000000 implements MigrationInterface {
         columnNames: ['client_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'client',
-        onDelete: 'CASCADE',
       }),
     );
   }

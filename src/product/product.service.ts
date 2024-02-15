@@ -10,7 +10,7 @@ export class ProductService {
 
   async create(createProductDto: CreateProductDto) {
     try {
-      const { name, type, unit } = createProductDto;
+      const { name, type, unit } = this.productRepository.create(createProductDto);
 
       if (type === 'LIQUID') {
         if (unit !== 'l') {
@@ -21,14 +21,13 @@ export class ProductService {
           throw new UnauthorizedException('Invalid combination: Non-liquid type must have unit kg.');
         }
       }
-      
-      const newProduct = await this.productRepository.save({
+      return await this.productRepository.save({
         name,
         type,
         unit
       });
 
-      return newProduct;
+     
     } catch (error) {
       throw new BadRequestException('Failure during creating product', error);
     }
