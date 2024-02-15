@@ -31,12 +31,12 @@ export class OrderService {
       const warehouse = createOrderDto.warehouseId ? await this.warehouseService.findOneById(createOrderDto.warehouseId) : null;
       const product = await this.productService.findOneById(createOrderDetailDto.productId);
 
-      const { type, clientId, warehouseId } = createOrderDto;
+      const { type } = createOrderDto;
 
       const newOrder = await this.orderRepository.save({
         type,
         clientId: client ? client.id : null,
-        warehouseId: warehouse ? warehouse.id : null
+        warehouseId: type === 'ORDER' ? null : warehouse ? warehouse.id : null
       });
 
       const orderId = newOrder.id;
@@ -61,17 +61,17 @@ export class OrderService {
       } else {
         receiverWarehouseId = warehouse.id;
       }
-      
+
       const newOrderDetail = await this.orderDetailRepository.save({
-        senderWarehouseId: warehouse.id,
-        receiverWarehouseId,
+        senderWarehouseId: type !== 'ORDER' ? warehouse.id : null,
+        receiverWarehouseId: type === 'ORDER' ? null : receiverWarehouseId,
         orderId: newOrder.id,
         productId: product.id,
         quantity,
         price,
         totalPrice,
       });
-      
+
 
       return { newOrder, newInvoice, newOrderDetail };
     } catch (error) {
